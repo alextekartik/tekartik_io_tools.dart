@@ -1,4 +1,3 @@
-tekartik_io_tools.dart
-======================
+# tekartik_io_tools
 
-common utilities that could be used with pub global run
+A minimal command-line application.
