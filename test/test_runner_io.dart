@@ -4,7 +4,11 @@
 library all_tests;
 
 import 'git_utils_test.dart' as git_utils_test;
+import 'file_utils_test.dart' as file_utils_test;
+import 'process_utils_test.dart' as process_utils_test;
 
 void main() {
   git_utils_test.defineTests();
+  file_utils_test.defineTests();
+  process_utils_test.defineTests();
 }

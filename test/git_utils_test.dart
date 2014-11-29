@@ -1,8 +1,8 @@
 library git_utils_tests;
 
-import 'package:tekartik_core/test/test_utils_io.dart';
-import '../lib/git_utils.dart';
-import 'package:tekartik_core/process_utils.dart';
+import 'package:tekartik_test/test_utils_io.dart';
+import 'package:tekartik_io_tools/git_utils.dart';
+import 'package:tekartik_io_tools/process_utils.dart';
 
 void main() => defineTests();
 

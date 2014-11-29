@@ -3,7 +3,7 @@ library git_utils;
 import 'dart:async';
 import 'dart:io';
 
-import 'package:tekartik_core/process_utils.dart';
+import 'package:tekartik_io_tools/process_utils.dart';
 import 'package:path/path.dart';
 import 'package:logging/logging.dart';
 
