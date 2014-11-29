@@ -16,8 +16,8 @@ dev_dependencies:
   tekartik_test:
     git: git://github.com/alextekartik/tekartik_test.dart
 dependency_overrides:
-  tekartik_core:
-    path: ../tekartik_core.dart
-  tekartik_test:
-    path: ../tekartik_test.dart
+#  tekartik_core:
+#    path: ../tekartik_core.dart
+#  tekartik_test:
+#    path: ../tekartik_test.dart
   
