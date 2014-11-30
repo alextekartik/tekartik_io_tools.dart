@@ -1,23 +1,16 @@
 name: tekartik_io_tools
-version: 0.0.1
+version: 0.0.2
 description: A minimal command-line application.
-#author: <your name> <email@example.com>
-#homepage: https://www.example.com
 environment:
   sdk: '>=1.0.0 <2.0.0'
 dependencies:
   args: any
-  path: any
   logging: any
+  path: any
   tekartik_core:
     git: git://github.com/alextekartik/tekartik_core.dart
 dev_dependencies:
-  unittest: any
   tekartik_test:
     git: git://github.com/alextekartik/tekartik_test.dart
-dependency_overrides:
-#  tekartik_core:
-#    path: ../tekartik_core.dart
-#  tekartik_test:
-#    path: ../tekartik_test.dart
-  
+  unittest: any
+dependency_overrides: null

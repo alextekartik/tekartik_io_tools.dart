@@ -42,7 +42,7 @@ void main(List<String> arguments) {
 
   bool help = _argsResult[_HELP];
   if (help) {
-    print(parser.getUsage());
+    print(parser.usage);
     return;
   }
   String logLevel = _argsResult[_LOG];
