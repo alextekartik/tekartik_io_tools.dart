@@ -205,7 +205,7 @@ Future<int> linkOrCopyFileIfNewer(String input, String output) {
   if (Platform.isWindows) {
     return copyFileIfNewer(input, output);
   } else {
-    return linkDir(input, output);
+    return linkFile(input, output);
   }
 }
 

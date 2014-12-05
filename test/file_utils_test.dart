@@ -32,6 +32,25 @@ void defineTests() {
 
     });
 
+    test('link_or_copy_file_if_newer', () {
+      String path1 = outDataFilenamePath(SIMPLE_FILE_NAME);
+      String path2 = outDataFilenamePath(SIMPLE_FILE_NAME_2);
+
+      writeStringContentSync(path1, SIMPLE_CONTENT);
+
+      return linkOrCopyFileIfNewer(path1, path2).then((int copied) {
+        if (!Platform.isWindows) {
+          expect(FileSystemEntity.isFileSync(path2), isTrue);
+        }
+        expect(new File(path2).readAsStringSync(), equals(SIMPLE_CONTENT));
+        expect(copied, equals(1));
+        return linkOrCopyFileIfNewer(path1, path2).then((int copied) {
+          expect(copied, equals(0));
+        });
+      });
+
+    });
+
     test('copy_files_if_newer', () {
       String sub1 = outDataFilenamePath('sub1');
       String file1 = join(sub1, SIMPLE_FILE_NAME);
