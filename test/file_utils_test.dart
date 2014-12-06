@@ -110,6 +110,27 @@ void defineTests() {
       });
 
     });
+    
+    test('deployEntityIfNewer', () {
+          String sub1 = outDataFilenamePath('sub1');
+          String file1 = join(sub1, SIMPLE_FILE_NAME);
+          writeStringContentSync(file1, SIMPLE_CONTENT + "1");
+          String file2 = join(sub1, SIMPLE_FILE_NAME_2);
+                writeStringContentSync(file2, SIMPLE_CONTENT + "2");
+                
+          String sub2 = outDataFilenamePath('sub2');
+
+          return deployEntitiesIfNewer(sub1, sub2, [SIMPLE_FILE_NAME, SIMPLE_FILE_NAME_2]).then((int copied) {
+            //expect(copied, equals(1));
+            // check sub
+            expect(new File(join(sub2, SIMPLE_FILE_NAME)).readAsStringSync(), equals(SIMPLE_CONTENT + "1"));
+
+            return deployEntitiesIfNewer(sub1, sub2, [SIMPLE_FILE_NAME, SIMPLE_FILE_NAME_2]).then((int copied) {
+              expect(copied, equals(0));
+            });
+          });
+
+        });
 
   });
 

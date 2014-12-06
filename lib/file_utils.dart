@@ -146,13 +146,13 @@ Future<int> linkFile(String target, String link) {
 Future _link(String target, String link) {
 
   link = normalize(absolute(link));
-    target = normalize(absolute(target));
-    Link ioLink = new Link(link);
+  target = normalize(absolute(target));
+  Link ioLink = new Link(link);
 
-    // resolve target
-    if (FileSystemEntity.isLinkSync(target)) {
-      target = new Link(target).targetSync();
-    }
+  // resolve target
+  if (FileSystemEntity.isLinkSync(target)) {
+    target = new Link(target).targetSync();
+  }
 
   if (FileSystemEntity.isLinkSync(target)) {
     target = new Link(target).targetSync();
@@ -172,10 +172,15 @@ Future _link(String target, String link) {
   return ioLink.create(target).catchError((e) {
     Directory parent = new Directory(dirname(link));
     if (!parent.existsSync()) {
+      try {
       parent.createSync(recursive: true);
+      } catch (e) {
+        // ignore the error
+      }
     } else {
-      print('linkDir failed($e) - target: $target, existingLink: $existingLink');
-      throw e;
+      // ignore the error and try again
+      // print('linkDir failed($e) - target: $target, existingLink: $existingLink');
+      // throw e;
     }
     return ioLink.create(target);
   }).then((_) => 1);
@@ -268,6 +273,20 @@ Future<int> linkOrCopyIfNewer(String src, String dst) {
         }
       });
     }
+  });
+}
+
+/**
+ * Helper to copy recursively a source to a destination
+ */
+Future<int> deployEntitiesIfNewer(String srcDir, String dstDir, List<String> entitiesPath) {
+  List<Future> futures = [];
+  for (String entityPath in entitiesPath) {
+    futures.add(linkOrCopyIfNewer(join(srcDir, entityPath), join(dstDir, entityPath)));
+  }
+  return Future.wait(futures).then((_) {
+    // Todo
+    return 0;
   });
 }
 
