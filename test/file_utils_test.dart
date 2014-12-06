@@ -77,6 +77,39 @@ void defineTests() {
 
     });
 
+    test('link_or_copy_if_newer_file', () {
+      String path1 = outDataFilenamePath(SIMPLE_FILE_NAME);
+      String path2 = outDataFilenamePath(SIMPLE_FILE_NAME_2);
+      writeStringContentSync(path1, SIMPLE_CONTENT);
+
+      return linkOrCopyIfNewer(path1, path2).then((int copied) {
+        expect(new File(path2).readAsStringSync(), equals(SIMPLE_CONTENT));
+        expect(copied, equals(1));
+        return linkOrCopyIfNewer(path1, path2).then((int copied) {
+          expect(copied, equals(0));
+        });
+      });
+
+    });
+
+    test('link_or_copy_if_newer_dir', () {
+      String sub1 = outDataFilenamePath('sub1');
+      String file1 = join(sub1, SIMPLE_FILE_NAME);
+      writeStringContentSync(file1, SIMPLE_CONTENT + "1");
+
+      String sub2 = outDataFilenamePath('sub2');
+
+      return linkOrCopyIfNewer(sub1, sub2).then((int copied) {
+        expect(copied, equals(1));
+        // check sub
+        expect(new File(join(sub2, SIMPLE_FILE_NAME)).readAsStringSync(), equals(SIMPLE_CONTENT + "1"));
+
+        return linkOrCopyIfNewer(sub1, sub2).then((int copied) {
+          expect(copied, equals(0));
+        });
+      });
+
+    });
 
   });
 

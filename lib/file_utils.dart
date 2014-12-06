@@ -253,6 +253,25 @@ Future<int> linkOrCopyFilesInDirIfNewer(String input, String output, {bool recur
 }
 
 /**
+ * Helper to copy recursively a source to a destination
+ */
+Future<int> linkOrCopyIfNewer(String src, String dst) {
+  return FileSystemEntity.isDirectory(src).then((bool isDir) {
+    if (isDir) {
+      return linkOrCopyFilesInDirIfNewer(src, dst, recursive: true);
+    } else {
+      return FileSystemEntity.isFile(src).then((bool isFile) {
+        if (isFile) {
+          return linkOrCopyFileIfNewer(src, dst);
+        } else {
+          throw "${src} entity not found";
+        }
+      });
+    }
+  });
+}
+
+/**
  * obsolete
  */
 Future<int> createSymlink(Directory targetDir, Directory linkDir, String targetSubPath, [String linkSubPath]) {
