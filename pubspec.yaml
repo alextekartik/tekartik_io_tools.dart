@@ -13,4 +13,6 @@ dev_dependencies:
   tekartik_test:
     git: git://github.com/alextekartik/tekartik_test.dart
   unittest: any
+executables:
+   rgitpull:
 dependency_overrides: null
