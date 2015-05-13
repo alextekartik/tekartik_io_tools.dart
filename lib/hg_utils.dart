@@ -1,4 +1,4 @@
-library tekartik_git_utils;
+library tekartik_hg_utils;
 
 import 'dart:async';
 import 'dart:io';
@@ -10,40 +10,50 @@ import 'package:logging/logging.dart';
 Logger __log;
 Logger get _log {
   if (__log == null) {
-    __log = new Logger("git_utils");
+    __log = new Logger("hg_utils");
   }
   return __log;
 }
 
 bool _DEBUG = false;
 
-class GitStatusResult {
+class HgStatusResult {
   final RunResult runResult;
-  GitStatusResult(this.runResult);
+  HgStatusResult(this.runResult);
   bool nothingToCommit = false;
+  //bool branchIsAhead = false;
+}
+
+class HgOutgoingResult {
+  final RunResult runResult;
+  HgOutgoingResult(this.runResult);
   bool branchIsAhead = false;
 }
 
-class GitPath {
+class HgPath {
   String _path;
   String get path => _path;
-  GitPath(this._path);
-  GitPath._();
+  HgPath(this._path);
+  HgPath._();
 
   Future pull() {
-    return gitPull(path);
+    return _run(['pull']);
   }
 
   Future<RunResult> _run(List<String> args) {
-    return gitRun(args, workingDirectory: path);
+    return hgRun(args, workingDirectory: path);
   }
 
-  Future<GitStatusResult> status() {
+  Future<HgStatusResult> status() {
     return _run(['status']).then((RunResult result) {
-      GitStatusResult statusResult = new GitStatusResult(result);
+      HgStatusResult statusResult = new HgStatusResult(result);
 
       bool showResult = true;
       if (result.exitCode == 0) {
+        if (result.out.isEmpty) {
+          statusResult.nothingToCommit = true;
+        }
+        /*
         List<String> lines = result.out.split("\n");
 
         lines.forEach((String line) {
@@ -55,20 +65,47 @@ class GitPath {
             statusResult.branchIsAhead = true;
           }
         });
+        */
+      }
+      if (!statusResult.nothingToCommit) {
+        _displayResult(result);
+      }
 
-        if ((!statusResult.nothingToCommit) || (statusResult.branchIsAhead)) {
-          showResult = true;
-        } else {
-          showResult = false;
-        }
+      return statusResult;
+    });
+  }
 
+  Future<HgOutgoingResult> outgoing() {
+    return _run(['outgoing']).then((RunResult result) {
+      HgOutgoingResult outgoingResult = new HgOutgoingResult(result);
+
+      bool showResult = true;
+
+      switch (result.exitCode) {
+        case 0:
+        case 1:
+          {
+            List<String> lines = result.out.split("\n");
+            //print(lines.last);
+            if (lines.last.startsWith('no changes found') ||
+                lines.last.startsWith('aucun changement')) {
+              outgoingResult.branchIsAhead = false;
+            } else {
+              outgoingResult.branchIsAhead = true;
+            }
+          }
+          if (outgoingResult.branchIsAhead) {
+            showResult = true;
+          } else {
+            showResult = false;
+          }
       }
 
       if (showResult) {
         _displayResult(result);
       }
 
-      return statusResult;
+      return outgoingResult;
     });
   }
 
@@ -94,7 +131,7 @@ class GitPath {
 
   void _displayResult(RunResult result) {
     print("-------------------------------");
-    print("Git project ${_path}");
+    print("Hg project ${_path}");
     print(
         "exitCode ${result.exitCode} ${result.executable} ${result.arguments} ${result.workingDirectory}");
     print("-------------------------------");
@@ -107,9 +144,9 @@ class GitPath {
   }
 }
 
-class GitProject extends GitPath {
+class HgProject extends HgPath {
   String src;
-  GitProject(this.src, {String rootFolder}) : super._() {
+  HgProject(this.src, {String rootFolder}) : super._() {
     // Handle null
     if (path == null) {
       Uri uri = Uri.parse(src);
@@ -135,16 +172,13 @@ class GitProject extends GitPath {
 
   Future clone() {
     List<String> args = ['clone'];
-    if (_log.isLoggable(Level.FINEST)) {
-      args.add('--progress');
-    }
     args.addAll([src, path]);
-    return gitRun(args);
+    return hgRun(args);
   }
 
   Future pullOrClone() {
     // TODO: check the origin branch
-    if (new File(join(path, '.git', 'config')).existsSync()) {
+    if (new File(join(path, '.hg', 'hgrc')).existsSync()) {
       return pull();
     } else {
       return clone();
@@ -152,14 +186,17 @@ class GitProject extends GitPath {
   }
 }
 
-Future<RunResult> gitRun(List<String> args,
+Future<RunResult> hgRun(List<String> args,
     {String workingDirectory, bool connectIo: false}) {
   if (_DEBUG) {
-    print('running git ${args}');
+    print('running hg ${args}');
   }
-  return run('git', args,
+  return run('hg', args,
       workingDirectory: workingDirectory, connectIo: connectIo).catchError((e) {
     // Caught ProcessException: No such file or directory
+    if (_DEBUG) {
+      print('exception: ${e}');
+    }
 
     if (e is ProcessException) {
       print("${e.executable} ${e.arguments}");
@@ -168,7 +205,7 @@ Future<RunResult> gitRun(List<String> args,
 
       if (e.message.contains("No such file or directory") &&
           (e.errorCode == 2)) {
-        print('GIT ERROR: make sure you have git install in your path');
+        print('GIT ERROR: make sure you have hg install in your path');
       }
     }
     throw e;
@@ -180,16 +217,8 @@ Future<RunResult> gitRun(List<String> args,
   });
 }
 
-Future gitPull(String path) {
-  return gitRun(['pull'], workingDirectory: path);
-}
-
-Future gitStatus(String path) {
-  return gitRun(['status'], workingDirectory: path);
-}
-
-Future<bool> isGitTopLevelPath(String path) async {
-  String dotGit = ".git";
-  String gitFile = join(path, dotGit);
-  return await FileSystemEntity.isDirectory(gitFile);
+Future<bool> isHgTopLevelPath(String path) async {
+  String dotHg = ".hg";
+  String hgFile = join(path, dotHg);
+  return await FileSystemEntity.isDirectory(hgFile);
 }

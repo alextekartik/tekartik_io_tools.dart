@@ -64,7 +64,7 @@ logProcessResult(ProcessResult result, [String msg]) {
   }
 }
 
-Future<RunResult> run(String executable, List<String> arguments, {String workingDirectory, bool throwException: true, bool connectIo}) {
+Future<RunResult> run(String executable, List<String> arguments, {String workingDirectory, bool throwException: true, bool connectIo, bool runInShell: false}) {
   if (arguments == null) {
     arguments = [];
   }
@@ -85,7 +85,7 @@ Future<RunResult> run(String executable, List<String> arguments, {String working
   }
 
   if (connectIo == true) {
-    return Process.start(executable, arguments, workingDirectory: workingDirectory).then((Process process) {
+    return Process.start(executable, arguments, workingDirectory: workingDirectory, runInShell: runInShell).then((Process process) {
       StringBuffer out = new StringBuffer();
       StringBuffer err = new StringBuffer();
       

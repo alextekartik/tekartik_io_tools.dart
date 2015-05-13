@@ -13,6 +13,7 @@ import 'package:args/args.dart';
 //import 'package:tekartik_common/project_utils.dart';
 import 'package:tekartik_core/log_utils.dart';
 import 'package:tekartik_io_tools/git_utils.dart';
+import 'package:tekartik_io_tools/hg_utils.dart';
 
 const String _HELP = 'help';
 const String _LOG = 'log';
@@ -22,7 +23,7 @@ const String _LOG = 'log';
 /// 
 void main(List<String> arguments) {
 
-  setupQuickLogging();
+  //setupQuickLogging();
 
   ArgParser parser = new ArgParser(allowTrailingOptions: true);
   parser.addFlag(_HELP, abbr: 'h', help: 'Usage help', negatable: false);
@@ -56,6 +57,13 @@ void main(List<String> arguments) {
       if (await isGitTopLevelPath(dir)) {
         GitPath prj = new GitPath(dir);
         await(prj.status());
+      } else if (await isHgTopLevelPath(dir)) {
+        HgPath prj = new HgPath(dir);
+        HgStatusResult statusResult = await(prj.status());
+        if (statusResult.nothingToCommit) {
+          await(prj.outgoing());
+        }
+
       } else {
         await new Directory(dir).list().listen((FileSystemEntity fse) {
           _handleDir(fse.path);
