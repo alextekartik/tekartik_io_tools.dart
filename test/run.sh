@@ -1,5 +1,11 @@
 #/bin/sh
 
-_DIR=$(dirname $BASH_SOURCE)
+pushd $(dirname $0) > /dev/null
+cd ..
+_DIR=`pwd`
+popd > /dev/null
 
-dart ${_DIR}/test_runner_io.dart
+echo ${_DIR}
+pushd ${_DIR}
+pub run test:test -p vm -r expanded
+popd
