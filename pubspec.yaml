@@ -1,5 +1,5 @@
 name: tekartik_io_tools
-version: 0.0.3
+version: 0.0.4
 description: A minimal command-line application.
 environment:
   sdk: '>=1.0.0 <2.0.0'
@@ -15,4 +15,5 @@ dev_dependencies:
   test: any
 executables:
    rgitpull:
+   rscstatus:
 dependency_overrides: null
