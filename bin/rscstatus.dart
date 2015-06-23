@@ -9,9 +9,8 @@ import 'package:path/path.dart';
 import 'package:args/args.dart';
 //import 'package:logging/logging.dart';
 //import 'package:tekartik_common/platform_utils.dart';
-//import 'package:tekartik_common/process_utils.dart';
-//import 'package:tekartik_common/project_utils.dart';
 import 'package:tekartik_core/log_utils.dart';
+//import 'package:tekartik_common/project_utils.dart';
 import 'package:tekartik_io_tools/git_utils.dart';
 import 'package:tekartik_io_tools/hg_utils.dart';
 
@@ -20,9 +19,11 @@ const String _LOG = 'log';
 
 ///
 /// Recursively update (pull) git folders
-/// 
+///
+///
 void main(List<String> arguments) {
 
+  Logger log;
   //setupQuickLogging();
 
   ArgParser parser = new ArgParser(allowTrailingOptions: true);
@@ -38,9 +39,10 @@ void main(List<String> arguments) {
   }
   String logLevel = _argsResult[_LOG];
   if (logLevel != null) {
-    Logger.root.level = parseLogLevel(logLevel);
-    Logger.root.info('Log level ${Logger.root.level}');
+    setupQuickLogging(parseLogLevel(logLevel));
   }
+  log = new Logger("rscstatus");
+  log.fine('Log level ${Logger.root.level}');
 
   // get dirs in parameters, default to current
   List<String> dirs = _argsResult.rest;
@@ -52,8 +54,9 @@ void main(List<String> arguments) {
   int size = 0;
 
   Future _handleDir(String dir) async {
-
+    log.finest(dir);
     if (await FileSystemEntity.isDirectory(dir)) {
+      log.finer(dir);
       if (await isGitTopLevelPath(dir)) {
         GitPath prj = new GitPath(dir);
         await(prj.status());
@@ -65,9 +68,13 @@ void main(List<String> arguments) {
         }
 
       } else {
-        await new Directory(dir).list().listen((FileSystemEntity fse) {
-          _handleDir(fse.path);
-        }).asFuture();
+        try {
+          await new Directory(dir).list().listen((FileSystemEntity fse) {
+            _handleDir(fse.path);
+          }).asFuture();
+        } catch (e, st) {
+          log.fine(e.toString(), e, st);
+        }
       }
     }
     /*
