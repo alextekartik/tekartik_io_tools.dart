@@ -47,7 +47,7 @@ void defineTests() {
     test('HgProject', () async {
       if (hgPresent) {
         clearOutFolderSync();
-        var prj = new HgProject('https://alextk@bitbucket.org/alextk/hg_data_test', rootFolder: outDataPath);
+        var prj = new HgProject('https://e@bitbucket.org/alextk/hg_data_test', rootFolder: outDataPath);
         await prj.clone();
         HgStatusResult statusResult = await prj.status();
         expect(statusResult.nothingToCommit, true);
