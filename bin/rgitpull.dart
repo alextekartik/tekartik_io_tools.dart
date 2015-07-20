@@ -48,7 +48,6 @@ void main(List<String> arguments) {
   }
 
   List<Future> futures = [];
-  int size = 0;
 
   Future _handleDir(String dir) {
     // this is a directoru

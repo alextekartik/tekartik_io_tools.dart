@@ -1,6 +1,5 @@
 library process_utils_tests;
 
-import 'package:tekartik_test/test_utils_io.dart';
 import 'package:test/test.dart';
 import 'package:tekartik_io_tools/process_utils.dart';
 import 'package:tekartik_io_tools/platform_utils.dart';

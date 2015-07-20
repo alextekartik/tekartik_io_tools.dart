@@ -109,27 +109,22 @@ void defineTests() {
       });
 
     });
-    
-    test('deployEntityIfNewer', () {
-          String sub1 = outDataFilenamePath('sub1');
-          String file1 = join(sub1, SIMPLE_FILE_NAME);
-          writeStringContentSync(file1, SIMPLE_CONTENT + "1");
-          String file2 = join(sub1, SIMPLE_FILE_NAME_2);
-                writeStringContentSync(file2, SIMPLE_CONTENT + "2");
-                
-          String sub2 = outDataFilenamePath('sub2');
 
-          return deployEntitiesIfNewer(sub1, sub2, [SIMPLE_FILE_NAME, SIMPLE_FILE_NAME_2]).then((int copied) {
-            //expect(copied, equals(1));
-            // check sub
-            expect(new File(join(sub2, SIMPLE_FILE_NAME)).readAsStringSync(), equals(SIMPLE_CONTENT + "1"));
+    test('deployEntityIfNewer', () async {
+      String sub1 = outDataFilenamePath('sub1');
+      String file1 = join(sub1, SIMPLE_FILE_NAME);
+      writeStringContentSync(file1, SIMPLE_CONTENT + "1");
+      String file2 = join(sub1, SIMPLE_FILE_NAME_2);
+      writeStringContentSync(file2, SIMPLE_CONTENT + "2");
 
-            return deployEntitiesIfNewer(sub1, sub2, [SIMPLE_FILE_NAME, SIMPLE_FILE_NAME_2]).then((int copied) {
-              expect(copied, equals(0));
-            });
-          });
+      String sub2 = outDataFilenamePath('sub2');
 
-        });
+      await deployEntitiesIfNewer(sub1, sub2, [SIMPLE_FILE_NAME, SIMPLE_FILE_NAME_2]);
+      expect(new File(join(sub2, SIMPLE_FILE_NAME)).readAsStringSync(), equals(SIMPLE_CONTENT + "1"));
+
+      int copied = await deployEntitiesIfNewer(sub1, sub2, [SIMPLE_FILE_NAME, SIMPLE_FILE_NAME_2]);
+      expect(copied, equals(0));
+    });
 
   });
 
@@ -139,14 +134,13 @@ void defineTests() {
     });
 
     // new way to link a dir (work on linux/windows
-    test('link_dir', () {
+    test('link_dir', () async {
       String sub1 = outDataFilenamePath('sub1');
       String file1 = join(sub1, SIMPLE_FILE_NAME);
       writeStringContentSync(file1, SIMPLE_CONTENT);
 
       String sub2 = outDataFilenamePath('sub2');
-      return linkDir(sub1, sub2).then((count) {
-        Directory dir = new Directory(sub2);
+      await linkDir(sub1, sub2).then((count) async {
         expect(FileSystemEntity.isLinkSync(sub2), isTrue);
         if (!Platform.isWindows) {
           expect(FileSystemEntity.isDirectorySync(sub2), isTrue);
@@ -154,14 +148,14 @@ void defineTests() {
         expect(count, equals(1));
 
         // 2nd time nothing is done
-        linkDir(sub1, sub2).then((count) {
+        await linkDir(sub1, sub2).then((count) {
           expect(count, equals(0));
         });
 
       });
     });
 
-    test('create file symlink', () {
+    test('create file symlink', () async {
       // file symlink not supported on windows
       if (Platform.isWindows) {
         return null;
@@ -170,7 +164,7 @@ void defineTests() {
       String path2 = outDataFilenamePath(SIMPLE_FILE_NAME_2);
       writeStringContentSync(path1, SIMPLE_CONTENT);
 
-      return linkFile(path1, path2).then((int result) {
+      await linkFile(path1, path2).then((int result) {
         expect(result, 1);
         expect(new File(path2).readAsStringSync(), equals(SIMPLE_CONTENT));
       });

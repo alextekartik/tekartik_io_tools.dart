@@ -1,11 +1,7 @@
-#/bin/sh
+#/bin/bash
 
-pushd $(dirname $0) > /dev/null
-cd ..
-_DIR=`pwd`
-popd > /dev/null
+pushd $(dirname $(dirname $BASH_SOURCE))
 
-echo ${_DIR}
-pushd ${_DIR}
-pub run test:test -p vm -r expanded
-# popd
+# prevent test from running in parallel -j 1
+pub run test -j 1 -p vm -r expanded $*
+

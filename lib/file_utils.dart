@@ -44,7 +44,6 @@ Future<int> copyFilesIfNewer(String input, String output, {bool recursive: true,
 }
 
 Future<int> copyFileIfNewer(String input, String output) {
-  Completer completer = new Completer();
   return FileStat.stat(input).then((FileStat inputStat) {
     return FileStat.stat(output).then((FileStat outputStat) {
       if ((inputStat.size != outputStat.size) || (inputStat.modified.isAfter(outputStat.modified))) {
@@ -70,7 +69,7 @@ void writeStringContentSync(String path, String content) {
   File file = new File(path);
   try {
     file.writeAsStringSync(content);
-  } on FileSystemException catch (e) {
+  } on FileSystemException {
     Directory parent = file.parent;
     if (!parent.existsSync()) {
       parent.createSync(recursive: true);

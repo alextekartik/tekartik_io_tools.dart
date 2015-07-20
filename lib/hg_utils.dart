@@ -5,8 +5,9 @@ import 'dart:io';
 
 import 'package:tekartik_io_tools/process_utils.dart';
 import 'package:path/path.dart';
-import 'package:logging/logging.dart';
+// import 'package:logging/logging.dart';
 
+/*
 Logger __log;
 Logger get _log {
   if (__log == null) {
@@ -14,6 +15,7 @@ Logger get _log {
   }
   return __log;
 }
+*/
 
 bool _DEBUG = false;
 
@@ -48,7 +50,7 @@ class HgPath {
     return _run(['status']).then((RunResult result) {
       HgStatusResult statusResult = new HgStatusResult(result);
 
-      bool showResult = true;
+      //bool showResult = true;
       if (result.exitCode == 0) {
         if (result.out.isEmpty) {
           statusResult.nothingToCommit = true;
@@ -205,7 +207,7 @@ Future<RunResult> hgRun(List<String> args,
 
       if (e.message.contains("No such file or directory") &&
           (e.errorCode == 2)) {
-        print('GIT ERROR: make sure you have hg install in your path');
+        print('HG ERROR: make sure you have hg install in your path');
       }
     }
     throw e;

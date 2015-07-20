@@ -5,12 +5,8 @@ library git_pull;
 
 import 'dart:io';
 import 'dart:async';
-import 'package:path/path.dart';
 import 'package:args/args.dart';
-//import 'package:logging/logging.dart';
-//import 'package:tekartik_common/platform_utils.dart';
 import 'package:tekartik_core/log_utils.dart';
-//import 'package:tekartik_common/project_utils.dart';
 import 'package:tekartik_io_tools/git_utils.dart';
 import 'package:tekartik_io_tools/hg_utils.dart';
 
@@ -51,7 +47,6 @@ void main(List<String> arguments) {
   }
 
   List<Future> futures = [];
-  int size = 0;
 
   Future _handleDir(String dir) async {
     log.finest(dir);
