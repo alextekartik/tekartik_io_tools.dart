@@ -8,6 +8,7 @@ import 'package:path/path.dart';
 import 'package:logging/logging.dart';
 
 Logger __log;
+
 Logger get _log {
   if (__log == null) {
     __log = new Logger("git_utils");
@@ -15,19 +16,24 @@ Logger get _log {
   return __log;
 }
 
-bool _DEBUG = true; //false;
+bool _DEBUG = false;
 
 class GitStatusResult {
   final RunResult runResult;
+
   GitStatusResult(this.runResult);
+
   bool nothingToCommit = false;
   bool branchIsAhead = false;
 }
 
 class GitPath {
   String _path;
+
   String get path => _path;
+
   GitPath(this._path);
+
   GitPath._();
 
   Future pull() {
@@ -48,10 +54,12 @@ class GitPath {
 
         lines.forEach((String line) {
           // Linux /Win?/Mac?
-          if (line.startsWith('nothing to commit')) {
+          if (line.startsWith('nothing to commit (working directory clean)')) {
             statusResult.nothingToCommit = true;
           }
-          if (line.startsWith('Your branch is ahead of')) {
+          if (line.startsWith('Your branch is ahead of') ||
+          line.startsWith('# Your branch is ahead of') // output of drone io
+          ) {
             statusResult.branchIsAhead = true;
           }
         });
@@ -109,6 +117,7 @@ class GitPath {
 
 class GitProject extends GitPath {
   String src;
+
   GitProject(this.src, {String rootFolder}) : super._() {
     // Handle null
     if (path == null) {
@@ -153,12 +162,12 @@ class GitProject extends GitPath {
 }
 
 Future<RunResult> gitRun(List<String> args,
-    {String workingDirectory, bool connectIo: false}) {
+                         {String workingDirectory, bool connectIo: false}) {
   if (_DEBUG) {
     print('running git ${args}');
   }
   return run('git', args,
-      workingDirectory: workingDirectory, connectIo: connectIo).catchError((e) {
+  workingDirectory: workingDirectory, connectIo: connectIo).catchError((e) {
     // Caught ProcessException: No such file or directory
 
     if (e is ProcessException) {
@@ -167,7 +176,7 @@ Future<RunResult> gitRun(List<String> args,
       print(e.errorCode);
 
       if (e.message.contains("No such file or directory") &&
-          (e.errorCode == 2)) {
+      (e.errorCode == 2)) {
         print('GIT ERROR: make sure you have git install in your path');
       }
     }
