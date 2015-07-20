@@ -16,7 +16,7 @@ Logger get _log {
   return __log;
 }
 
-bool _DEBUG = false;
+bool _DEBUG = true;
 
 class GitStatusResult {
   final RunResult runResult;
@@ -54,7 +54,7 @@ class GitPath {
 
         lines.forEach((String line) {
           // Linux /Win?/Mac?
-          if (line.startsWith('nothing to commit (working directory clean)')) {
+          if (line.startsWith('nothing to commit')) {
             statusResult.nothingToCommit = true;
           }
           if (line.startsWith('Your branch is ahead of') ||
@@ -177,7 +177,7 @@ Future<RunResult> gitRun(List<String> args,
 
       if (e.message.contains("No such file or directory") &&
       (e.errorCode == 2)) {
-        print('GIT ERROR: make sure you have git install in your path');
+        print('GIT ERROR: make sure you have git installed in your path');
       }
     }
     throw e;

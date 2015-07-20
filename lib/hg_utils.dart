@@ -207,7 +207,7 @@ Future<RunResult> hgRun(List<String> args,
 
       if (e.message.contains("No such file or directory") &&
           (e.errorCode == 2)) {
-        print('HG ERROR: make sure you have hg install in your path');
+        print('HG ERROR: make sure you have hg installed in your path');
       }
     }
     throw e;

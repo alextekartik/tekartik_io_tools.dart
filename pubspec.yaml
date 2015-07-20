@@ -16,4 +16,5 @@ dev_dependencies:
 executables:
    rgitpull:
    rscstatus:
-dependency_overrides: null
+   rpubtest:
+dependency_overrides:
