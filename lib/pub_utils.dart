@@ -30,6 +30,7 @@ Future pubBuild({String projectPath, String subDir: 'web', bool debug: false}) {
 }
 */
 
+/*
 enum TestPlaform {
   VM, DARTIUM, CONTENT_SHELL, CHROME, PHANTOMJS, FIREFOX
 }
@@ -40,6 +41,7 @@ Map<TestPlaform, String> _testPlatformStringMap = new Map.fromIterables(
     ["vm", "dartium", "content-shell", "chrome", "phantomjs", "firefox"]);
 
 String _testPlatformString(TestPlaform platform) => _testPlatformStringMap[platform];
+*/
 
 enum TestReporter {
   COMPACT, EXPANDED
@@ -62,8 +64,14 @@ class PubPackage {
     return runPub(args, workingDirectory: _path, connectIo: connectIo);
   }
 
-  Future<RunResult> runTest(List<String> args, {TestReporter reporter, int concurrency, List/*<TestPlatform>*/
-  platforms, bool connectIo: false}) async {
+  Future<RunResult> upgrade(List<String> args, {bool connectIo: false}) {
+    args = new List.from(args);
+    args.insertAll(0, ['upgrade']);
+    return pub(args, connectIo: connectIo);
+  }
+
+  Future<RunResult> runTest(List<String> args, {TestReporter reporter, int concurrency, List<String>
+  platforms, bool connectIo: false}) {
     args = new List.from(args);
     args.insertAll(0, ['run', 'test']);
     if (reporter != null) {
@@ -73,8 +81,8 @@ class PubPackage {
       args.addAll(['-j', concurrency.toString()]);
     }
     if (platforms != null) {
-      for (TestPlaform platform in platforms) {
-        args.addAll(['-p', _testPlatformString(platform)]);
+      for (String platform in platforms) {
+        args.addAll(['-p', platform]);
       }
     }
     return pub(args, connectIo: connectIo);

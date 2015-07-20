@@ -1,3 +1,4 @@
+@TestOn("vm")
 library file_utils_tests;
 
 import 'package:test/test.dart';

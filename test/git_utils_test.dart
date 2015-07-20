@@ -1,3 +1,4 @@
+@TestOn("vm")
 library git_utils_tests;
 
 import 'package:test/test.dart';

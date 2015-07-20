@@ -1,3 +1,4 @@
+@TestOn("vm")
 library process_utils_tests;
 
 import 'package:test/test.dart';
