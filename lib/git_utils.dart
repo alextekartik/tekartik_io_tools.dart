@@ -15,7 +15,7 @@ Logger get _log {
   return __log;
 }
 
-bool _DEBUG = false;
+bool _DEBUG = true; //false;
 
 class GitStatusResult {
   final RunResult runResult;
