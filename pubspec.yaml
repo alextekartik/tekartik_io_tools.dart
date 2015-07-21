@@ -18,5 +18,5 @@ executables:
    rgitpull:
    rscstatus:
    rpubtest:
-   pubupgrade:
+   rpubupgrade:
 dependency_overrides:
