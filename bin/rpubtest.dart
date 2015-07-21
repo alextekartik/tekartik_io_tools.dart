@@ -41,7 +41,7 @@ void main(List<String> arguments) {
   parser.addFlag(_HELP, abbr: 'h', help: 'Usage help', negatable: false);
   parser.addOption(_LOG, abbr: 'l', help: 'Log level (fine, debug, info...)');
   parser.addFlag(_DRY_RUN, abbr: 'n', help: 'Do not run test, simple show packages to be tested', negatable: false);
-  parser.addOption(_CONCURRENCY, abbr: 'j', help: 'Number of concurrent operation', defaultsTo: '1');
+  parser.addOption(_CONCURRENCY, abbr: 'j', help: 'Number of concurrent packages tested', defaultsTo: '10');
   parser.addOption(_PLATFORM,
   abbr: 'p',
   help: 'The platform(s) on which to run the tests.',
@@ -91,46 +91,13 @@ void main(List<String> arguments) {
     }
   }
 
-
-  Future _handleDir(String dir) {
-
-    Future _handleYaml(String yamlPath) async {
-      try {
-        String content = await new File(yamlPath).readAsString();
-        var doc = loadYaml(content);
-
-        bool _hasDependencies(String kind) {
-          Map dependencies = doc[kind];
-          if (dependencies != null) {
-            if (dependencies['test'] != null) {
-              return true;
-            }
-          }
-          return false;
-        }
-
-        if (_hasDependencies('dependencies') || _hasDependencies('dev_dependencies')) {
-          await _handleProject(dir);
-        }
-      } catch (e, st) {
-        print('Error parsing $yamlPath');
-        print(e);
-        print(st);
-      }
-    }
-
-    String pubspecYaml = "pubspec.yaml";
-    String pubspecYamlPath = join(dir, pubspecYaml);
-    return _handleYaml(pubspecYamlPath);
-  }
-
   int poolSize = int.parse(_argsResult[_CONCURRENCY]);
 
   Pool pool = new Pool(poolSize);
 
-  recursivePubPath(dirs).listen((String path) {
+  recursivePubPath(dirs, dependencies: ['test']).listen((String path) {
     pool.withResource(() async {
-      return await _handleDir(path);
+      return await _handleProject(path);
     });
   });
 }

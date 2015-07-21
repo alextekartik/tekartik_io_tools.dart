@@ -11,7 +11,7 @@ import 'dart:async';
 
 void main() => defineTests();
 
-Future<String> get pubPackageRoot => getPubPackageRoot(testScriptPath);
+Future<String> get _pubPackageRoot => getPubPackageRoot(testScriptPath);
 
 void defineTests() {
   //useVMConfiguration();
@@ -27,7 +27,7 @@ void defineTests() {
       expect(await isPubPackageRoot(dirname(testScriptPath)), isFalse);
       expect(await isPubPackageRoot(dirname(dirname(dirname(testScriptPath)))), isFalse);
       expect(await isPubPackageRoot(dirname(dirname(testScriptPath))), isTrue);
-      expect(await pubPackageRoot, dirname(dirname(testScriptPath)));
+      expect(await _pubPackageRoot, dirname(dirname(testScriptPath)));
       try {
         await getPubPackageRoot(join('/', 'dummy', 'path'));
         fail('no');
@@ -37,7 +37,7 @@ void defineTests() {
     });
 
     test('pub_package', () async {
-      PubPackage pkg = new PubPackage(await getPubPackageRoot(testScriptPath));
+      PubPackage pkg = new PubPackage(await _pubPackageRoot);
       RunResult runResult = await pkg.runTest(['test/data/success_test_.dart'],
       platforms: ["vm"],
       reporter: TestReporter.EXPANDED,
@@ -49,11 +49,26 @@ void defineTests() {
     });
 
     test('rpubpath', () async {
+      String pubPackageRoot = await _pubPackageRoot;
       clearOutFolderSync();
       List<String> paths = [];
-      await recursivePubPath([await pubPackageRoot]).listen((String path) {
+      await recursivePubPath([pubPackageRoot]).listen((String path) {
         paths.add(path);
       }).asFuture();
+      expect(paths, [pubPackageRoot]);
+
+      // with criteria
+      paths = [];
+      await recursivePubPath([pubPackageRoot], dependencies: ['test']).listen((String path) {
+        paths.add(path);
+      }).asFuture();
+      expect(paths, [pubPackageRoot]);
+
+      paths = [];
+      await recursivePubPath([pubPackageRoot], dependencies: ['unittest']).listen((String path) {
+        paths.add(path);
+      }).asFuture();
+      expect(paths, []);
 
       bool failed = false;
       try {

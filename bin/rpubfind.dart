@@ -6,19 +6,14 @@ library tekartik.rpubtest;
 import 'dart:io';
 import 'package:args/args.dart';
 import 'package:tekartik_core/log_utils.dart';
-import 'package:tekartik_io_tools/pub_utils.dart';
 import 'package:tekartik_io_tools/src/rpubpath.dart';
-import 'package:pool/pool.dart';
 
 const String _HELP = 'help';
 const String _LOG = 'log';
-const String _DRY_RUN = 'dry-run';
-const String _CONCURRENCY = 'concurrency';
+const String _DEPENDENCY = 'dependency';
 
 ///
-/// Recursively update (pull) git folders
-///
-/// rpubupgrade -j 10 -n
+/// Recursively find packages
 /// 
 void main(List<String> arguments) {
 
@@ -27,8 +22,10 @@ void main(List<String> arguments) {
   ArgParser parser = new ArgParser(allowTrailingOptions: true);
   parser.addFlag(_HELP, abbr: 'h', help: 'Usage help', negatable: false);
   parser.addOption(_LOG, abbr: 'l', help: 'Log level (fine, debug, info...)');
-  parser.addOption(_CONCURRENCY, abbr: 'j', help: 'Number of concurrent operation', defaultsTo: Platform.isWindows ? '1' : '10');
-  parser.addFlag(_DRY_RUN, abbr: 'n', help: 'Report, do not run', negatable: false);
+  parser.addOption(_DEPENDENCY,
+  abbr: 'd',
+  help: 'The packages it depends on',
+  allowMultiple: true);
   ArgResults _argsResult = parser.parse(arguments);
 
   bool help = _argsResult[_HELP];
@@ -41,7 +38,8 @@ void main(List<String> arguments) {
     Logger.root.level = parseLogLevel(logLevel);
     Logger.root.info('Log level ${Logger.root.level}');
   }
-  bool dryRun = _argsResult[_DRY_RUN];
+
+  List<String> dependencies = _argsResult[_DEPENDENCY];
 
   // get dirs in parameters, default to current
   List<String> dirs = _argsResult.rest;
@@ -49,21 +47,10 @@ void main(List<String> arguments) {
     dirs = [Directory.current.path];
   }
 
-  int poolSize = int.parse(_argsResult[_CONCURRENCY]);
 
-  Pool pool = new Pool(poolSize);
-
-  recursivePubPath(dirs).listen((String path) {
-    pool.withResource(() async {
-      PubPackage pkg = new PubPackage(path);
-
-      List<String> args = [];
-      if (dryRun) {
-        args.addAll(['--dry-run']);
-      }
-      await pkg.upgrade(args, connectIo: true);
-    });
+  recursivePubPath(dirs, dependencies: dependencies).listen((String path) {
+    //stdout.writeln(path);
+    print(path);
   });
-
 }
 
