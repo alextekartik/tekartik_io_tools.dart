@@ -7,7 +7,6 @@ import 'dart:io';
 import 'dart:async';
 import 'package:path/path.dart';
 import 'package:args/args.dart';
-import 'package:yaml/yaml.dart';
 import 'package:tekartik_core/log_utils.dart';
 import 'package:tekartik_io_tools/pub_utils.dart';
 import 'package:tekartik_io_tools/process_utils.dart';
@@ -63,21 +62,25 @@ void main(List<String> arguments) {
   bool dryRun = _argsResult[_DRY_RUN];
 
   // get dirs in parameters, default to current
-  List<String> dirs = _argsResult.rest;
+  List<String> dirs = new List.from(_argsResult.rest);
   if (dirs.isEmpty) {
     dirs = [Directory.current.path];
   }
 
   List<String> platforms = _argsResult[_PLATFORM];
 
-  Future _handleProject(String path) async {
+  Future _handleProject(String path, [String file]) async {
     PubPackage pkg = new PubPackage(path);
     //print(pkg);
     if (dryRun) {
       print('test on ${pkg.path}');
     } else {
       try {
-        RunResult result = await pkg.runTest([], concurrency: 1,
+        List<String> args = [];
+        if (file != null) {
+          args.add(file);
+        }
+        RunResult result = await pkg.runTest(args, concurrency: 1,
         //reporter: TestReporter.EXPANDED,
         platforms:platforms, connectIo: true);
         if (result.exitCode != 0) {
@@ -95,10 +98,29 @@ void main(List<String> arguments) {
 
   Pool pool = new Pool(poolSize);
 
+  // Handle direct dart test file access
+  List<String> testFiles = [];
+  for (String dir in dirs) {
+    if (FileSystemEntity.isFileSync(dir)) {
+      testFiles.add(dir);
+    }
+  }
+  for (String testFile in testFiles) {
+    dirs.remove(testFile);
+
+    pool.withResource(() async {
+      String path = await getPubPackageRoot(testFile);
+      testFile = relative(testFile, from: path);
+      return await _handleProject(path, testFile);
+    });
+  }
+
   recursivePubPath(dirs, dependencies: ['test']).listen((String path) {
     pool.withResource(() async {
       return await _handleProject(path);
     });
   });
+
+
 }
 
