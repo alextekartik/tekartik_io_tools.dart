@@ -143,7 +143,15 @@ Future<RunResult> runPub(List<String> args,
     print('running pub ${args}');
   }
   try {
-    RunResult result = await run(dartPubBin, args,
+    String bin;
+    args = new List.from(args);
+    if (Platform.isWindows) {
+      bin = dartVmBin;
+      args.insert(0, join(dartBinDirPath, 'snapshots', 'pub.dart.snapshot'));
+    } else {
+      bin = dartPubBin;
+    }
+    RunResult result = await run(bin, args,
     workingDirectory: workingDirectory, connectIo: connectIo);
     if (_DEBUG) {
       print('result: ${result}');

@@ -1,4 +1,10 @@
 development activation:
 ----------------------
 
+linux
+
 pub global activate -s path /media/ssd/devx/git/tekartik_io_tools.dart
+
+windows
+
+pub global activate -s path c:\devx\git\tekartik_io_tools.dart

@@ -31,9 +31,11 @@ void defineTests() {
     */
 
     test('GitProject', () async {
+      print(join("1", "2"));
       clearOutFolderSync();
       var prj = new GitProject('https://github.com/alextekartik/data_test.git', rootFolder: outDataPath);
       // stderr.write("XXXXX ${outDataPath} XXXX");
+      print(outDataPath);
       await prj.clone();
       GitStatusResult statusResult = await prj.status();
       expect(statusResult.nothingToCommit, true);
