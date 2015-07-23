@@ -97,6 +97,11 @@ Future<bool> isPubPackageRoot(String dirPath) async {
   return await FileSystemEntity.isFile(pubspecYamlPath);
 }
 
+bool isPubPackageRootSync(String dirPath) {
+  String pubspecYamlPath = join(dirPath, _pubspecYaml);
+  return FileSystemEntity.isFileSync(pubspecYamlPath);
+}
+
 /// throws if no project found
 Future<String> getPubPackageRoot(String resolverPath) async {
   String dirPath = normalize(absolute(resolverPath));
@@ -104,6 +109,23 @@ Future<String> getPubPackageRoot(String resolverPath) async {
   while (true) {
     // Find the project root path
     if (await isPubPackageRoot(dirPath)) {
+      return dirPath;
+    }
+    String parentDirPath = dirname(dirPath);
+
+    if (parentDirPath == dirPath) {
+      throw new Exception("No project found for path '$resolverPath");
+    }
+    dirPath = parentDirPath;
+  }
+}
+
+String getPubPackageRootSync(String resolverPath) {
+  String dirPath = normalize(absolute(resolverPath));
+
+  while (true) {
+    // Find the project root path
+    if (isPubPackageRootSync(dirPath)) {
       return dirPath;
     }
     String parentDirPath = dirname(dirPath);

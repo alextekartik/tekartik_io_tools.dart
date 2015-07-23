@@ -23,10 +23,15 @@ void defineTests() {
       expect(result.out.startsWith("Pub"), isTrue);
     });
 
+    _testIsPubPackageRoot(String path, bool expected) async {
+      expect(await isPubPackageRoot(path), expected);
+      expect(isPubPackageRootSync(path), expected);
+    }
+
     test('root', () async {
-      expect(await isPubPackageRoot(dirname(testScriptPath)), isFalse);
-      expect(await isPubPackageRoot(dirname(dirname(dirname(testScriptPath)))), isFalse);
-      expect(await isPubPackageRoot(dirname(dirname(testScriptPath))), isTrue);
+      _testIsPubPackageRoot(dirname(testScriptPath), false);
+      _testIsPubPackageRoot(dirname(dirname(dirname(testScriptPath))), false);
+      _testIsPubPackageRoot(dirname(dirname(testScriptPath)), true);
       expect(await _pubPackageRoot, dirname(dirname(testScriptPath)));
       try {
         await getPubPackageRoot(join('/', 'dummy', 'path'));

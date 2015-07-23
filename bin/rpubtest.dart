@@ -67,7 +67,16 @@ void main(List<String> arguments) {
     dirs = [Directory.current.path];
   }
 
-  List<String> platforms = _argsResult[_PLATFORM];
+  List<String> platforms;
+  if (_argsResult.wasParsed(_PLATFORM)) {
+    platforms = _argsResult[_PLATFORM];
+  } else {
+    String envPlatforms = Platform.environment["TEKARTIK_RPUBTEST_PLATFORMS"];
+    if (envPlatforms != null) {
+      stdout.writeln("Using platforms: ${envPlatforms}");
+      platforms = envPlatforms.split(",");
+    }
+  }
 
   Future _handleProject(String path, [String file]) async {
     PubPackage pkg = new PubPackage(path);
