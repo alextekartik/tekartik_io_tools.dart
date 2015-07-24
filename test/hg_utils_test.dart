@@ -15,20 +15,16 @@ void defineTests() {
   //useVMConfiguration();
   group('hg', () {
 
-    bool hgPresent = false;
+    bool _isHgSupported;
 
     setUp(() async {
-      try {
-        await hgRun([]);
-        hgPresent = true;
-      } catch (e) {
-        print('Skipping HG tests');
-        print(e);
+      if (_isHgSupported == null) {
+        _isHgSupported = await isHgSupported;
       }
     });
 
     test('version', () async {
-      if (hgPresent) {
+      if (_isHgSupported) {
         await hgRun(['--version']).then((RunResult result) {
           // git version 1.9.1
           expect(result.out.startsWith("Mercurial Distributed SCM"), isTrue);
@@ -46,7 +42,7 @@ void defineTests() {
     */
 
     test('HgProject', () async {
-      if (hgPresent) {
+      if (_isHgSupported) {
         clearOutFolderSync();
         var prj = new HgProject('https://bitbucket.org/alextk/hg_data_test', rootFolder: outDataPath);
         await prj.clone();

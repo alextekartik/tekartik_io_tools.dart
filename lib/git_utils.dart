@@ -36,12 +36,17 @@ class GitPath {
 
   GitPath._();
 
-  Future pull() {
-    return gitPull(path);
+  Future pull({bool dryRun}) {
+    return _run(['pull'], dryRun: dryRun);
   }
 
-  Future<RunResult> _run(List<String> args) {
-    return gitRun(args, workingDirectory: path);
+  Future<RunResult> _run(List<String> args, {bool dryRun}) async {
+    if (dryRun == true) {
+      stdout.writeln("git ${args.join(' ')} [$path]");
+      return new RunResult();
+    } else {
+      return gitRun(args, workingDirectory: path);
+    }
   }
 
   Future<GitStatusResult> status() {
@@ -161,6 +166,15 @@ class GitProject extends GitPath {
   }
 }
 
+Future<bool> get isGitSupported async {
+  try {
+    await gitRun(['--version']);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
 Future<RunResult> gitRun(List<String> args,
                          {String workingDirectory, bool connectIo: false}) {
   if (_DEBUG) {
@@ -189,10 +203,12 @@ Future<RunResult> gitRun(List<String> args,
   });
 }
 
+@deprecated
 Future gitPull(String path) {
   return gitRun(['pull'], workingDirectory: path);
 }
 
+@deprecated
 Future gitStatus(String path) {
   return gitRun(['status'], workingDirectory: path);
 }

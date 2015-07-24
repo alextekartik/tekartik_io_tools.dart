@@ -9,17 +9,26 @@ import 'dart:io';
 
 import 'package:path/path.dart';
 
-void main() => defineTests();
-
-void defineTests() {
+void main() {
   //useVMConfiguration();
   group('git', () {
-    test('version', () async {
-      await gitRun(['--version']).then((RunResult result) {
-        // git version 1.9.1
-        expect(result.out.startsWith("git version"), isTrue);
-      });
+    bool _isGitSupported;
+
+    setUp(() async {
+      if (_isGitSupported == null) {
+        _isGitSupported = await isGitSupported;
+      }
     });
+
+    test('version', () async {
+      if (_isGitSupported) {
+        await gitRun(['--version']).then((RunResult result) {
+          // git version 1.9.1
+          expect(result.out.startsWith("git version"), isTrue);
+        });
+      }
+    });
+
 
     /*
     test('isGitTopLevelPath', () async {
@@ -31,27 +40,29 @@ void defineTests() {
     */
 
     test('GitProject', () async {
-      print(join("1", "2"));
-      clearOutFolderSync();
-      var prj = new GitProject('https://github.com/alextekartik/data_test.git', rootFolder: outDataPath);
-      // stderr.write("XXXXX ${outDataPath} XXXX");
-      print(outDataPath);
-      await prj.clone();
-      GitStatusResult statusResult = await prj.status();
-      expect(statusResult.nothingToCommit, true);
-      expect(statusResult.branchIsAhead, false);
+      if (_isGitSupported) {
+        print(join("1", "2"));
+        clearOutFolderSync();
+        var prj = new GitProject('https://github.com/alextekartik/data_test.git', rootFolder: outDataPath);
+        // stderr.write("XXXXX ${outDataPath} XXXX");
+        print(outDataPath);
+        await prj.clone();
+        GitStatusResult statusResult = await prj.status();
+        expect(statusResult.nothingToCommit, true);
+        expect(statusResult.branchIsAhead, false);
 
-      File tempFile = new File(join(prj.path, "temp_file.txt"));
-      await tempFile.writeAsString("echo");
-      statusResult = await prj.status();
-      expect(statusResult.nothingToCommit, false);
-      expect(statusResult.branchIsAhead, false);
+        File tempFile = new File(join(prj.path, "temp_file.txt"));
+        await tempFile.writeAsString("echo");
+        statusResult = await prj.status();
+        expect(statusResult.nothingToCommit, false);
+        expect(statusResult.branchIsAhead, false);
 
-      await prj.add(pathspec: ".");
-      await prj.commit("test");
-      statusResult = await prj.status();
-      expect(statusResult.nothingToCommit, true);
-      expect(statusResult.branchIsAhead, true);
+        await prj.add(pathspec: ".");
+        await prj.commit("test");
+        statusResult = await prj.status();
+        expect(statusResult.nothingToCommit, true);
+        expect(statusResult.branchIsAhead, true);
+      }
 
     });
 

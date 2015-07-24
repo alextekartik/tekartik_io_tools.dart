@@ -38,12 +38,13 @@ class HgPath {
   HgPath(this._path);
   HgPath._();
 
-  Future pull() {
-    return _run(['pull']);
-  }
-
-  Future<RunResult> _run(List<String> args) {
-    return hgRun(args, workingDirectory: path);
+  Future<RunResult> _run(List<String> args, {bool dryRun}) async {
+    if (dryRun == true) {
+      stdout.writeln("hg ${args.join(' ')} [$path]");
+      return new RunResult();
+    } else {
+      return hgRun(args, workingDirectory: path);
+    }
   }
 
   Future<HgStatusResult> status() {
@@ -109,6 +110,14 @@ class HgPath {
 
       return outgoingResult;
     });
+  }
+
+  Future<RunResult> pull({bool update: true, bool dryRun}) {
+    List<String> args = ['pull'];
+    if (update == true) {
+      args.add('-u');
+    }
+    return _run(args, dryRun: dryRun);
   }
 
   Future<RunResult> add({String pathspec}) {
@@ -185,6 +194,15 @@ class HgProject extends HgPath {
     } else {
       return clone();
     }
+  }
+}
+
+Future<bool> get isHgSupported async {
+  try {
+    await hgRun(['--version']);
+    return true;
+  } catch (e) {
+    return false;
   }
 }
 

@@ -15,11 +15,11 @@ default is to test on vm platform, you can define multiple platforms in an env v
 
     export TEKARTIK_RPUBTEST_PLATFORMS=content-shell,vm
 
-## rgitpull
+## rscpull
 
-    rgitpull
+    rscpull
 
-Recursively pull git update
+Recursively call 'git pull' and 'hg pull -u'
 
 ## rscstatus
 
