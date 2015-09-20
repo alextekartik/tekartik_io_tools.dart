@@ -41,11 +41,11 @@ void main() {
 
     test('GitProject', () async {
       if (_isGitSupported) {
-        print(join("1", "2"));
+        //print(join("1", "2"));
         clearOutFolderSync();
         var prj = new GitProject('https://github.com/alextekartik/data_test.git', rootFolder: outDataPath);
         // stderr.write("XXXXX ${outDataPath} XXXX");
-        print(outDataPath);
+        //print(outDataPath);
         await prj.clone();
         GitStatusResult statusResult = await prj.status();
         expect(statusResult.nothingToCommit, true);

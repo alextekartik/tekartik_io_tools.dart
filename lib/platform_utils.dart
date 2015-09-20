@@ -43,14 +43,26 @@ String _dartVmBin;
  */
 String get dartVmBin {
   if (_dartVmBin == null) {
+    String executable = Platform.executable;
     _dartVmBin = Platform.executable;
-    if (!isAbsolute(_dartVmBin)) {
+
+    // Sometimes we might just get "dart" so use which function on linux/mac
+    // to find where it comes from
+    if (!isAbsolute(executable)) {
       if (!Platform.isWindows) {
-        _dartVmBin = (Process.runSync('which', [_dartVmBin]).stdout as String).trim();
+        _dartVmBin =
+            (Process.runSync('which', [executable]).stdout as String).trim();
       }
     }
     if (FileSystemEntity.isLinkSync(_dartVmBin)) {
+      String link = _dartVmBin;
       _dartVmBin = new Link(_dartVmBin).targetSync();
+
+      // on mac, if installed with brew, we might get something like ../Cellar/dart/1.12.1/bin
+      // so make sure to make it absolute
+      if (!isAbsolute(_dartVmBin)) {
+        _dartVmBin = absolute(normalize(join(dirname(link), _dartVmBin)));
+      }
     }
   }
   return _dartVmBin;
@@ -84,9 +96,12 @@ String get dart2jsBin {
 }
 
 String get scriptDirPath {
-  String script = Platform.script.toFilePath(); // pathFromFileUriOrPath(Platform.script);
+  String script =
+      Platform.script.toFilePath(); // pathFromFileUriOrPath(Platform.script);
   //print('script path: $script');
-  return isAbsolute(script) ? normalize(dirname(script)) : Directory.current.path;
+  return isAbsolute(script)
+      ? normalize(dirname(script))
+      : Directory.current.path;
 }
 
 String get scriptFilePath {
@@ -98,12 +113,12 @@ List<String> runPubArgs(List<String> args) {
   List<String> runArgs = new List();
   runArgs.add(join(dartBinDirPath, 'snapshots', 'pub.dart.snapshot'));
   runArgs.addAll(args);
-  return runArgs;    
+  return runArgs;
 }
 
 Future<RunResult> runPub(List<String> args, {String workingDirectory}) {
-
   List<String> runArgs = runPubArgs(args);
 
-  return run(dartVmBin, runArgs, workingDirectory: workingDirectory, connectIo: true);
+  return run(dartVmBin, runArgs,
+      workingDirectory: workingDirectory, connectIo: true);
 }

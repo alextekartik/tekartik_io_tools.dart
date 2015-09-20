@@ -8,50 +8,13 @@ import 'package:path/path.dart';
 
 bool _DEBUG = false;
 
-/*
-Future pubBuildExample() => pubBuild(subDir: 'example', debug: true);
-Future pubBuild({String projectPath, String subDir: 'web', bool debug: false}) {
-
-  List<String> args = ['build'];
-
-  // debug
-  if (debug == true) {
-    args.add('--mode=debug');
-  }
-
-  // project dir
-  if (projectPath == null) {
-    projectPath = projectTopPath;
-  }
-
-  // dir
-  args.add(subDir);
-  return run(dartPubBin, args, workingDirectory: projectPath, connectIo: true);
-}
-*/
-
-/*
-enum TestPlaform {
-  VM, DARTIUM, CONTENT_SHELL, CHROME, PHANTOMJS, FIREFOX
-}
-
-
-Map<TestPlaform, String> _testPlatformStringMap = new Map.fromIterables(
-    [TestPlaform.VM, TestPlaform.DARTIUM, TestPlaform.CONTENT_SHELL, TestPlaform.CHROME, TestPlaform.PHANTOMJS, TestPlaform.FIREFOX],
-    ["vm", "dartium", "content-shell", "chrome", "phantomjs", "firefox"]);
-
-String _testPlatformString(TestPlaform platform) => _testPlatformStringMap[platform];
-*/
-
-enum TestReporter {
-  COMPACT, EXPANDED
-}
+enum TestReporter { COMPACT, EXPANDED }
 
 Map<TestReporter, String> _testReporterStringMap = new Map.fromIterables(
-    [TestReporter.COMPACT, TestReporter.EXPANDED],
-    ["compact", "expanded"]);
+    [TestReporter.COMPACT, TestReporter.EXPANDED], ["compact", "expanded"]);
 
-String _testReporterString(TestReporter reporter) => _testReporterStringMap[reporter];
+String _testReporterString(TestReporter reporter) =>
+    _testReporterStringMap[reporter];
 
 class PubPackage {
   String _path;
@@ -70,8 +33,11 @@ class PubPackage {
     return pub(args, connectIo: connectIo);
   }
 
-  Future<RunResult> runTest(List<String> args, {TestReporter reporter, int concurrency, List<String>
-  platforms, bool connectIo: false}) {
+  Future<RunResult> runTest(List<String> args,
+      {TestReporter reporter,
+      int concurrency,
+      List<String> platforms,
+      bool connectIo: false}) {
     args = new List.from(args);
     args.insertAll(0, ['run', 'test']);
     if (reporter != null) {
@@ -138,10 +104,7 @@ String getPubPackageRootSync(String resolverPath) {
 }
 
 Future<RunResult> runPub(List<String> args,
-                         {String workingDirectory, bool connectIo: false}) async {
-  if (_DEBUG) {
-    print('running pub ${args}');
-  }
+    {String workingDirectory, bool connectIo: false}) async {
   try {
     String bin;
     args = new List.from(args);
@@ -151,14 +114,17 @@ Future<RunResult> runPub(List<String> args,
     } else {
       bin = dartPubBin;
     }
+    if (_DEBUG) {
+      print('running pub ${args} ${dartPubBin}');
+    }
+
     RunResult result = await run(bin, args,
-    workingDirectory: workingDirectory, connectIo: connectIo);
+        workingDirectory: workingDirectory, connectIo: connectIo);
     if (_DEBUG) {
       print('result: ${result}');
     }
     return result;
-  }
-  catch (e) {
+  } catch (e) {
 // Caught ProcessException: No such file or directory
     if (_DEBUG) {
       print('exception: ${e}');
@@ -170,7 +136,7 @@ Future<RunResult> runPub(List<String> args,
       print(e.errorCode);
 
       if (e.message.contains("No such file or directory") &&
-      (e.errorCode == 2)) {
+          (e.errorCode == 2)) {
         print('PUB ERROR: make sure you have pub installed in your path');
       }
     }

@@ -36,7 +36,8 @@ void defineTests() {
   });
 
   test('run connectIo', () {
-    return run(dartVmBin, ['--version'], connectIo: true).then((RunResult result) {
+    // change false to true to check that you get output
+    return run(dartVmBin, ['--version'], connectIo: false).then((RunResult result) {
       // devPrint(result.err);
       expect(result.err.contains("version"), isTrue);
     });

@@ -47,7 +47,7 @@ class HgPath {
     }
   }
 
-  Future<HgStatusResult> status() {
+  Future<HgStatusResult> status({bool printResultIfChanges}) {
     return _run(['status']).then((RunResult result) {
       HgStatusResult statusResult = new HgStatusResult(result);
 
@@ -70,7 +70,7 @@ class HgPath {
         });
         */
       }
-      if (!statusResult.nothingToCommit) {
+      if (!statusResult.nothingToCommit && (printResultIfChanges == true)) {
         _displayResult(result);
       }
 
@@ -78,7 +78,7 @@ class HgPath {
     });
   }
 
-  Future<HgOutgoingResult> outgoing() {
+  Future<HgOutgoingResult> outgoing({bool printResultIfChanges}) {
     return _run(['outgoing']).then((RunResult result) {
       HgOutgoingResult outgoingResult = new HgOutgoingResult(result);
 
@@ -104,7 +104,7 @@ class HgPath {
           }
       }
 
-      if (showResult) {
+      if (showResult && (printResultIfChanges == true)) {
         _displayResult(result);
       }
 
