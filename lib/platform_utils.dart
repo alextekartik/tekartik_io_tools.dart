@@ -51,11 +51,7 @@ String get dartVmBin {
     if (!isAbsolute(executable)) {
       if (!Platform.isWindows) {
         _dartVmBin =
-<<<<<<< HEAD
-            (Process.runSync('which', [_dartVmBin]).stdout as String).trim();
-=======
             (Process.runSync('which', [executable]).stdout as String).trim();
->>>>>>> b05acc47aa3adf5218e515626a8593f1bc24917c
       }
     }
     if (FileSystemEntity.isLinkSync(_dartVmBin)) {

@@ -53,21 +53,12 @@ void main(List<String> arguments) {
       log.finer(dir);
       if (await isGitTopLevelPath(dir)) {
         GitPath prj = new GitPath(dir);
-<<<<<<< HEAD
-        await (prj.status());
-      } else if (await isHgTopLevelPath(dir)) {
-        HgPath prj = new HgPath(dir);
-        HgStatusResult statusResult = await (prj.status());
-        if (statusResult.nothingToCommit) {
-          await (prj.outgoing());
-=======
         await(prj.status(printResultIfChanges: true));
       } else if (await isHgTopLevelPath(dir)) {
         HgPath prj = new HgPath(dir);
         HgStatusResult statusResult = await(prj.status(printResultIfChanges: true));
         if (statusResult.nothingToCommit) {
           await(prj.outgoing(printResultIfChanges: true));
->>>>>>> b05acc47aa3adf5218e515626a8593f1bc24917c
         }
       } else {
         try {

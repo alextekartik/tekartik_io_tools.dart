@@ -8,44 +8,6 @@ import 'package:path/path.dart';
 
 bool _DEBUG = false;
 
-<<<<<<< HEAD
-/*
-Future pubBuildExample() => pubBuild(subDir: 'example', debug: true);
-Future pubBuild({String projectPath, String subDir: 'web', bool debug: false}) {
-
-  List<String> args = ['build'];
-
-  // debug
-  if (debug == true) {
-    args.add('--mode=debug');
-  }
-
-  // project dir
-  if (projectPath == null) {
-    projectPath = projectTopPath;
-  }
-
-  // dir
-  args.add(subDir);
-  return run(dartPubBin, args, workingDirectory: projectPath, connectIo: true);
-}
-*/
-
-/*
-enum TestPlaform {
-  VM, DARTIUM, CONTENT_SHELL, CHROME, PHANTOMJS, FIREFOX
-}
-
-
-Map<TestPlaform, String> _testPlatformStringMap = new Map.fromIterables(
-    [TestPlaform.VM, TestPlaform.DARTIUM, TestPlaform.CONTENT_SHELL, TestPlaform.CHROME, TestPlaform.PHANTOMJS, TestPlaform.FIREFOX],
-    ["vm", "dartium", "content-shell", "chrome", "phantomjs", "firefox"]);
-
-String _testPlatformString(TestPlaform platform) => _testPlatformStringMap[platform];
-*/
-
-=======
->>>>>>> b05acc47aa3adf5218e515626a8593f1bc24917c
 enum TestReporter { COMPACT, EXPANDED }
 
 Map<TestReporter, String> _testReporterStringMap = new Map.fromIterables(
@@ -75,12 +37,8 @@ class PubPackage {
       {TestReporter reporter,
       int concurrency,
       List<String> platforms,
-<<<<<<< HEAD
       bool connectIo: false,
       String name}) {
-=======
-      bool connectIo: false}) {
->>>>>>> b05acc47aa3adf5218e515626a8593f1bc24917c
     args = new List.from(args);
     args.insertAll(0, ['run', 'test']);
     if (reporter != null) {
@@ -151,12 +109,9 @@ String getPubPackageRootSync(String resolverPath) {
 
 Future<RunResult> runPub(List<String> args,
     {String workingDirectory, bool connectIo: false}) async {
-<<<<<<< HEAD
   if (_DEBUG) {
     print('running pub ${args}');
   }
-=======
->>>>>>> b05acc47aa3adf5218e515626a8593f1bc24917c
   try {
     String bin;
     args = new List.from(args);
