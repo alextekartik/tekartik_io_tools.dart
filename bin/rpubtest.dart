@@ -18,6 +18,7 @@ const String _LOG = 'log';
 const String _DRY_RUN = 'dry-run';
 const String _CONCURRENCY = 'concurrency';
 const String _PLATFORM = 'platform';
+const String _NAME = 'name';
 
 const List<String> allPlatforms = const [
   "vm",
@@ -39,8 +40,9 @@ void main(List<String> arguments) {
   ArgParser parser = new ArgParser(allowTrailingOptions: true);
   parser.addFlag(_HELP, abbr: 'h', help: 'Usage help', negatable: false);
   parser.addOption(_LOG, abbr: 'l', help: 'Log level (fine, debug, info...)');
-  parser.addFlag(_DRY_RUN, abbr: 'n', help: 'Do not run test, simple show packages to be tested', negatable: false);
+  parser.addFlag(_DRY_RUN, abbr: 'd', help: 'Do not run test, simple show packages to be tested', negatable: false);
   parser.addOption(_CONCURRENCY, abbr: 'j', help: 'Number of concurrent packages tested', defaultsTo: '10');
+  parser.addOption(_NAME, abbr: 'n', help: 'A substring of the name of the test to run');
   parser.addOption(_PLATFORM,
   abbr: 'p',
   help: 'The platform(s) on which to run the tests.',
@@ -60,6 +62,8 @@ void main(List<String> arguments) {
     Logger.root.info('Log level ${Logger.root.level}');
   }
   bool dryRun = _argsResult[_DRY_RUN];
+
+  String name = _argsResult[_NAME];
 
   // get dirs in parameters, default to current
   List<String> dirs = new List.from(_argsResult.rest);
@@ -91,7 +95,7 @@ void main(List<String> arguments) {
         }
         RunResult result = await pkg.runTest(args, concurrency: 1,
         //reporter: TestReporter.EXPANDED,
-        platforms:platforms, connectIo: true);
+        platforms:platforms, connectIo: true, name: name);
         if (result.exitCode != 0) {
           stderr.writeln('test error in ${path}');
         }

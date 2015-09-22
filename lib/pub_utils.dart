@@ -71,7 +71,7 @@ class PubPackage {
   }
 
   Future<RunResult> runTest(List<String> args, {TestReporter reporter, int concurrency, List<String>
-  platforms, bool connectIo: false}) {
+  platforms, bool connectIo: false, String name}) {
     args = new List.from(args);
     args.insertAll(0, ['run', 'test']);
     if (reporter != null) {
@@ -79,6 +79,9 @@ class PubPackage {
     }
     if (concurrency != null) {
       args.addAll(['-j', concurrency.toString()]);
+    }
+    if (name != null) {
+      args.addAll(['-n', name]);
     }
     if (platforms != null) {
       for (String platform in platforms) {
