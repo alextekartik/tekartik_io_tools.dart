@@ -20,14 +20,16 @@ const String _DRY_RUN = 'dry-run';
 ///
 ///
 main(List<String> arguments) async {
-
   Logger log;
   //setupQuickLogging();
 
   ArgParser parser = new ArgParser(allowTrailingOptions: true);
   parser.addFlag(_HELP, abbr: 'h', help: 'Usage help', negatable: false);
   parser.addOption(_LOG, abbr: 'l', help: 'Log level (fine, debug, info...)');
-  parser.addFlag(_DRY_RUN, abbr: 'n', help: 'Do not run test, simple show packages to be tested', negatable: false);
+  parser.addFlag(_DRY_RUN,
+      abbr: 'n',
+      help: 'Do not run test, simple show packages to be tested',
+      negatable: false);
 
   ArgResults _argsResult = parser.parse(arguments);
 
@@ -61,14 +63,14 @@ main(List<String> arguments) async {
     // Ignore folder starting with .
     // don't event go below
     if (!basename(dir).startsWith('.') &&
-    (await FileSystemEntity.isDirectory(dir))) {
+        (await FileSystemEntity.isDirectory(dir))) {
       log.finer(dir);
       if (_isGitSupported && await isGitTopLevelPath(dir)) {
         GitPath prj = new GitPath(dir);
-        await(prj.pull(dryRun: dryRun));
+        await (prj.pull(dryRun: dryRun));
       } else if (_isHgSupported && await isHgTopLevelPath(dir)) {
         HgPath prj = new HgPath(dir);
-        await(prj.pull(dryRun: dryRun));
+        await (prj.pull(dryRun: dryRun));
       } else {
         try {
           await new Directory(dir).list().listen((FileSystemEntity fse) {
@@ -113,4 +115,3 @@ main(List<String> arguments) async {
     }
   }
 }
-

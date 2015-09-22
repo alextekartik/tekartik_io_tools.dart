@@ -29,7 +29,6 @@ void defineTests() {
           expect(copied, equals(0));
         });
       });
-
     });
 
     test('link_or_copy_file_if_newer', () {
@@ -48,7 +47,6 @@ void defineTests() {
           expect(copied, equals(0));
         });
       });
-
     });
 
     test('copy_files_if_newer', () {
@@ -65,16 +63,19 @@ void defineTests() {
 
       return copyFilesIfNewer(sub1, sub2).then((int copied) {
         // check sub
-        expect(new File(join(sub2, SIMPLE_FILE_NAME)).readAsStringSync(), equals(SIMPLE_CONTENT + "1"));
-        expect(new File(join(sub2, SIMPLE_FILE_NAME_2)).readAsStringSync(), equals(SIMPLE_CONTENT + "2"));
+        expect(new File(join(sub2, SIMPLE_FILE_NAME)).readAsStringSync(),
+            equals(SIMPLE_CONTENT + "1"));
+        expect(new File(join(sub2, SIMPLE_FILE_NAME_2)).readAsStringSync(),
+            equals(SIMPLE_CONTENT + "2"));
 
         // and subSub
-        expect(new File(join(sub2, 'sub1', SIMPLE_FILE_NAME)).readAsStringSync(), equals(SIMPLE_CONTENT + "3"));
+        expect(
+            new File(join(sub2, 'sub1', SIMPLE_FILE_NAME)).readAsStringSync(),
+            equals(SIMPLE_CONTENT + "3"));
         return copyFilesIfNewer(sub1, sub2).then((int copied) {
           expect(copied, equals(0));
         });
       });
-
     });
 
     test('link_or_copy_if_newer_file', () {
@@ -89,7 +90,6 @@ void defineTests() {
           expect(copied, equals(0));
         });
       });
-
     });
 
     test('link_or_copy_if_newer_dir', () {
@@ -102,13 +102,13 @@ void defineTests() {
       return linkOrCopyIfNewer(sub1, sub2).then((int copied) {
         expect(copied, equals(1));
         // check sub
-        expect(new File(join(sub2, SIMPLE_FILE_NAME)).readAsStringSync(), equals(SIMPLE_CONTENT + "1"));
+        expect(new File(join(sub2, SIMPLE_FILE_NAME)).readAsStringSync(),
+            equals(SIMPLE_CONTENT + "1"));
 
         return linkOrCopyIfNewer(sub1, sub2).then((int copied) {
           expect(copied, equals(0));
         });
       });
-
     });
 
     test('deployEntityIfNewer', () async {
@@ -120,13 +120,15 @@ void defineTests() {
 
       String sub2 = outDataFilenamePath('sub2');
 
-      await deployEntitiesIfNewer(sub1, sub2, [SIMPLE_FILE_NAME, SIMPLE_FILE_NAME_2]);
-      expect(new File(join(sub2, SIMPLE_FILE_NAME)).readAsStringSync(), equals(SIMPLE_CONTENT + "1"));
+      await deployEntitiesIfNewer(
+          sub1, sub2, [SIMPLE_FILE_NAME, SIMPLE_FILE_NAME_2]);
+      expect(new File(join(sub2, SIMPLE_FILE_NAME)).readAsStringSync(),
+          equals(SIMPLE_CONTENT + "1"));
 
-      int copied = await deployEntitiesIfNewer(sub1, sub2, [SIMPLE_FILE_NAME, SIMPLE_FILE_NAME_2]);
+      int copied = await deployEntitiesIfNewer(
+          sub1, sub2, [SIMPLE_FILE_NAME, SIMPLE_FILE_NAME_2]);
       expect(copied, equals(0));
     });
-
   });
 
   group('symlink', () {
@@ -152,7 +154,6 @@ void defineTests() {
         await linkDir(sub1, sub2).then((count) {
           expect(count, equals(0));
         });
-
       });
     });
 
@@ -189,6 +190,5 @@ void defineTests() {
 //
 //
 //    });
-
   });
 }

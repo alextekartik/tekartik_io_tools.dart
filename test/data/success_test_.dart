@@ -6,5 +6,4 @@ void main() {
   test('success', () async {
     expect(true, isTrue);
   });
-
 }

@@ -43,15 +43,13 @@ Map<TestPlaform, String> _testPlatformStringMap = new Map.fromIterables(
 String _testPlatformString(TestPlaform platform) => _testPlatformStringMap[platform];
 */
 
-enum TestReporter {
-  COMPACT, EXPANDED
-}
+enum TestReporter { COMPACT, EXPANDED }
 
 Map<TestReporter, String> _testReporterStringMap = new Map.fromIterables(
-    [TestReporter.COMPACT, TestReporter.EXPANDED],
-    ["compact", "expanded"]);
+    [TestReporter.COMPACT, TestReporter.EXPANDED], ["compact", "expanded"]);
 
-String _testReporterString(TestReporter reporter) => _testReporterStringMap[reporter];
+String _testReporterString(TestReporter reporter) =>
+    _testReporterStringMap[reporter];
 
 class PubPackage {
   String _path;
@@ -70,8 +68,12 @@ class PubPackage {
     return pub(args, connectIo: connectIo);
   }
 
-  Future<RunResult> runTest(List<String> args, {TestReporter reporter, int concurrency, List<String>
-  platforms, bool connectIo: false, String name}) {
+  Future<RunResult> runTest(List<String> args,
+      {TestReporter reporter,
+      int concurrency,
+      List<String> platforms,
+      bool connectIo: false,
+      String name}) {
     args = new List.from(args);
     args.insertAll(0, ['run', 'test']);
     if (reporter != null) {
@@ -141,7 +143,7 @@ String getPubPackageRootSync(String resolverPath) {
 }
 
 Future<RunResult> runPub(List<String> args,
-                         {String workingDirectory, bool connectIo: false}) async {
+    {String workingDirectory, bool connectIo: false}) async {
   if (_DEBUG) {
     print('running pub ${args}');
   }
@@ -155,13 +157,12 @@ Future<RunResult> runPub(List<String> args,
       bin = dartPubBin;
     }
     RunResult result = await run(bin, args,
-    workingDirectory: workingDirectory, connectIo: connectIo);
+        workingDirectory: workingDirectory, connectIo: connectIo);
     if (_DEBUG) {
       print('result: ${result}');
     }
     return result;
-  }
-  catch (e) {
+  } catch (e) {
 // Caught ProcessException: No such file or directory
     if (_DEBUG) {
       print('exception: ${e}');
@@ -173,7 +174,7 @@ Future<RunResult> runPub(List<String> args,
       print(e.errorCode);
 
       if (e.message.contains("No such file or directory") &&
-      (e.errorCode == 2)) {
+          (e.errorCode == 2)) {
         print('PUB ERROR: make sure you have pub installed in your path');
       }
     }

@@ -30,25 +30,32 @@ const List<String> allPlatforms = const [
   "safari",
   "ie"
 ];
+
 ///
 /// Recursively update (pull) git folders
-/// 
+///
 void main(List<String> arguments) {
-
   setupQuickLogging();
 
   ArgParser parser = new ArgParser(allowTrailingOptions: true);
   parser.addFlag(_HELP, abbr: 'h', help: 'Usage help', negatable: false);
   parser.addOption(_LOG, abbr: 'l', help: 'Log level (fine, debug, info...)');
-  parser.addFlag(_DRY_RUN, abbr: 'd', help: 'Do not run test, simple show packages to be tested', negatable: false);
-  parser.addOption(_CONCURRENCY, abbr: 'j', help: 'Number of concurrent packages tested', defaultsTo: '10');
-  parser.addOption(_NAME, abbr: 'n', help: 'A substring of the name of the test to run');
+  parser.addFlag(_DRY_RUN,
+      abbr: 'd',
+      help: 'Do not run test, simple show packages to be tested',
+      negatable: false);
+  parser.addOption(_CONCURRENCY,
+      abbr: 'j',
+      help: 'Number of concurrent packages tested',
+      defaultsTo: '10');
+  parser.addOption(_NAME,
+      abbr: 'n', help: 'A substring of the name of the test to run');
   parser.addOption(_PLATFORM,
-  abbr: 'p',
-  help: 'The platform(s) on which to run the tests.',
-  allowed: allPlatforms,
-  defaultsTo: 'vm',
-  allowMultiple: true);
+      abbr: 'p',
+      help: 'The platform(s) on which to run the tests.',
+      allowed: allPlatforms,
+      defaultsTo: 'vm',
+      allowMultiple: true);
   ArgResults _argsResult = parser.parse(arguments);
 
   bool help = _argsResult[_HELP];
@@ -93,9 +100,12 @@ void main(List<String> arguments) {
         if (file != null) {
           args.add(file);
         }
-        RunResult result = await pkg.runTest(args, concurrency: 1,
-        //reporter: TestReporter.EXPANDED,
-        platforms:platforms, connectIo: true, name: name);
+        RunResult result = await pkg.runTest(args,
+            concurrency: 1,
+            //reporter: TestReporter.EXPANDED,
+            platforms: platforms,
+            connectIo: true,
+            name: name);
         if (result.exitCode != 0) {
           stderr.writeln('test error in ${path}');
         }
@@ -133,7 +143,4 @@ void main(List<String> arguments) {
       return await _handleProject(path);
     });
   });
-
-
 }
-

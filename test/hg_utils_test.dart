@@ -14,7 +14,6 @@ void main() => defineTests();
 void defineTests() {
   //useVMConfiguration();
   group('hg', () {
-
     bool _isHgSupported;
 
     setUp(() async {
@@ -44,7 +43,8 @@ void defineTests() {
     test('HgProject', () async {
       if (_isHgSupported) {
         clearOutFolderSync();
-        var prj = new HgProject('https://bitbucket.org/alextk/hg_data_test', rootFolder: outDataPath);
+        var prj = new HgProject('https://bitbucket.org/alextk/hg_data_test',
+            rootFolder: outDataPath);
         await prj.clone();
         HgStatusResult statusResult = await prj.status();
         expect(statusResult.nothingToCommit, true);
@@ -66,8 +66,5 @@ void defineTests() {
         expect(outgoingResult.branchIsAhead, true);
       }
     });
-
   });
-
-
 }

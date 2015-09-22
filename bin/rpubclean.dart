@@ -33,7 +33,6 @@ Future cleanPath(String path, [bool root]) async {
           continue;
         }
       }
-
     } else {
       if (FileSystemEntity.isLinkSync(fse.path)) {
         if (basename(fse.path) == 'packages') {
@@ -43,18 +42,18 @@ Future cleanPath(String path, [bool root]) async {
       }
     }
 
-    if (FileSystemEntity.isDirectorySync(fse.path) && !(basename(fse.path).startsWith('.'))) {
+    if (FileSystemEntity.isDirectorySync(fse.path) &&
+        !(basename(fse.path).startsWith('.'))) {
       cleanPath(fse.path);
       //print(fse);
     }
-
   }
 }
+
 ///
 /// Recursively find packages
-/// 
+///
 void main(List<String> arguments) {
-
   setupQuickLogging();
 
   ArgParser parser = new ArgParser(allowTrailingOptions: true);
@@ -86,10 +85,8 @@ void main(List<String> arguments) {
     }
   }
 
-
   recursivePubPath(dirs).listen((String path) {
     //stdout.writeln(path);
     cleanPath(path, true);
   });
 }
-

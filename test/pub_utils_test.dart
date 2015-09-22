@@ -16,8 +16,6 @@ Future<String> get _pubPackageRoot => getPubPackageRoot(testScriptPath);
 void defineTests() {
   //useVMConfiguration();
   group('pub', () {
-
-
     test('version', () async {
       RunResult result = await runPub(['--version']);
       expect(result.out.startsWith("Pub"), isTrue);
@@ -36,17 +34,13 @@ void defineTests() {
       try {
         await getPubPackageRoot(join('/', 'dummy', 'path'));
         fail('no');
-      } catch (e) {
-
-      }
+      } catch (e) {}
     });
 
     test('pub_package', () async {
       PubPackage pkg = new PubPackage(await _pubPackageRoot);
       RunResult runResult = await pkg.runTest(['test/data/success_test_.dart'],
-      platforms: ["vm"],
-      reporter: TestReporter.EXPANDED,
-      concurrency: 1);
+          platforms: ["vm"], reporter: TestReporter.EXPANDED, concurrency: 1);
 
       expect(runResult.exitCode, 0);
       runResult = await pkg.runTest(['test/data/fail_test_.dart']);
@@ -64,13 +58,15 @@ void defineTests() {
 
       // with criteria
       paths = [];
-      await recursivePubPath([pubPackageRoot], dependencies: ['test']).listen((String path) {
+      await recursivePubPath([pubPackageRoot], dependencies: ['test'])
+          .listen((String path) {
         paths.add(path);
       }).asFuture();
       expect(paths, [pubPackageRoot]);
 
       paths = [];
-      await recursivePubPath([pubPackageRoot], dependencies: ['unittest']).listen((String path) {
+      await recursivePubPath([pubPackageRoot], dependencies: ['unittest'])
+          .listen((String path) {
         paths.add(path);
       }).asFuture();
       expect(paths, []);
@@ -82,13 +78,6 @@ void defineTests() {
         failed = true;
       }
       expect(failed, isTrue);
-
     });
-
-
-
-
   });
-
-
 }

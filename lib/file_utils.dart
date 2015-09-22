@@ -24,15 +24,19 @@ Future copyFile(String input, String output) {
 /**
  * Parameter are directory path
  */
-Future<int> copyFilesIfNewer(String input, String output, {bool recursive: true, bool followLinks: false}) {
+Future<int> copyFilesIfNewer(String input, String output,
+    {bool recursive: true, bool followLinks: false}) {
   int count = 0;
   Completer completer = new Completer();
   List<Future> futures = new List();
-  new Directory(input).list(recursive: recursive, followLinks: followLinks).listen((FileSystemEntity fse) {
+  new Directory(input)
+      .list(recursive: recursive, followLinks: followLinks)
+      .listen((FileSystemEntity fse) {
     //print("# ${fse.path}");
     if (FileSystemEntity.isFileSync(fse.path)) {
       String relativePath = relative(fse.path, from: input);
-      futures.add(copyFileIfNewer(fse.path, join(output, relativePath)).then((int copied) {
+      futures.add(copyFileIfNewer(fse.path, join(output, relativePath))
+          .then((int copied) {
         count += copied;
       }));
     }
@@ -46,7 +50,8 @@ Future<int> copyFilesIfNewer(String input, String output, {bool recursive: true,
 Future<int> copyFileIfNewer(String input, String output) {
   return FileStat.stat(input).then((FileStat inputStat) {
     return FileStat.stat(output).then((FileStat outputStat) {
-      if ((inputStat.size != outputStat.size) || (inputStat.modified.isAfter(outputStat.modified))) {
+      if ((inputStat.size != outputStat.size) ||
+          (inputStat.modified.isAfter(outputStat.modified))) {
         return copyFile(input, output).then((_) {
           return 1;
         });
@@ -105,7 +110,9 @@ Future<int> dirSize(String path) {
   int size = 0;
   List<Future> futures = [];
 
-  return new Directory(path).list(recursive: true, followLinks: true).listen((FileSystemEntity fse) {
+  return new Directory(path)
+      .list(recursive: true, followLinks: true)
+      .listen((FileSystemEntity fse) {
     //devPrint(FileSystemEntity.type(fse.path));
     futures.add(FileSystemEntity.isFile(fse.path).then((bool isFile) {
       if (isFile) {
@@ -120,9 +127,6 @@ Future<int> dirSize(String path) {
       return size;
     });
   });
-
-
-
 }
 
 /**
@@ -143,7 +147,6 @@ Future<int> linkFile(String target, String link) {
  * link dir (work on all platforms)
  */
 Future _link(String target, String link) {
-
   link = normalize(absolute(link));
   target = normalize(absolute(target));
   Link ioLink = new Link(link);
@@ -172,7 +175,7 @@ Future _link(String target, String link) {
     Directory parent = new Directory(dirname(link));
     if (!parent.existsSync()) {
       try {
-      parent.createSync(recursive: true);
+        parent.createSync(recursive: true);
       } catch (e) {
         // ignore the error
       }
@@ -189,7 +192,6 @@ Future _link(String target, String link) {
  * link dir (work on all platforms)
  */
 Future<int> linkDir(String target, String link) {
-
   // resolve target
   if (FileSystemEntity.isLinkSync(target)) {
     target = new Link(target).targetSync();
@@ -213,17 +215,17 @@ Future<int> linkOrCopyFileIfNewer(String input, String output) {
   }
 }
 
-
 /**
  * create the dirs but copy or link the files
  */
-Future<int> linkOrCopyFilesInDirIfNewer(String input, String output, {bool recursive: true, List<String> but}) {
+Future<int> linkOrCopyFilesInDirIfNewer(String input, String output,
+    {bool recursive: true, List<String> but}) {
   List<Future<int>> futures = new List();
 
-  List<FileSystemEntity> entities = new Directory(input).listSync(recursive: false, followLinks: true);
+  List<FileSystemEntity> entities =
+      new Directory(input).listSync(recursive: false, followLinks: true);
   new Directory(output).createSync(recursive: true);
   entities.forEach((entity) {
-
     bool ignore = false;
     if (but != null) {
       if (but.contains(basename(entity.path))) {
@@ -234,7 +236,8 @@ Future<int> linkOrCopyFilesInDirIfNewer(String input, String output, {bool recur
     if (!ignore) {
       if (FileSystemEntity.isFileSync(entity.path)) {
         String file = relative(entity.path, from: input);
-        futures.add(linkOrCopyFileIfNewer(join(input, file), join(output, file)));
+        futures
+            .add(linkOrCopyFileIfNewer(join(input, file), join(output, file)));
       } else if (FileSystemEntity.isDirectorySync(entity.path)) {
         if (recursive) {
           String dir = relative(entity.path, from: input);
@@ -253,7 +256,6 @@ Future<int> linkOrCopyFilesInDirIfNewer(String input, String output, {bool recur
     });
     return count;
   });
-
 }
 
 /**
@@ -278,10 +280,12 @@ Future<int> linkOrCopyIfNewer(String src, String dst) {
 /**
  * Helper to copy recursively a source to a destination
  */
-Future<int> deployEntitiesIfNewer(String srcDir, String dstDir, List<String> entitiesPath) {
+Future<int> deployEntitiesIfNewer(
+    String srcDir, String dstDir, List<String> entitiesPath) {
   List<Future> futures = [];
   for (String entityPath in entitiesPath) {
-    futures.add(linkOrCopyIfNewer(join(srcDir, entityPath), join(dstDir, entityPath)));
+    futures.add(
+        linkOrCopyIfNewer(join(srcDir, entityPath), join(dstDir, entityPath)));
   }
   return Future.wait(futures).then((_) {
     // Todo
@@ -292,7 +296,9 @@ Future<int> deployEntitiesIfNewer(String srcDir, String dstDir, List<String> ent
 /**
  * obsolete
  */
-Future<int> createSymlink(Directory targetDir, Directory linkDir, String targetSubPath, [String linkSubPath]) {
+Future<int> createSymlink(
+    Directory targetDir, Directory linkDir, String targetSubPath,
+    [String linkSubPath]) {
   if (linkSubPath == null) {
     linkSubPath = targetSubPath;
   }
@@ -322,7 +328,8 @@ Future<int> createSymlink(Directory targetDir, Directory linkDir, String targetS
     });
     //} else
   } else {
-    new Directory(normalize(absolute(dirname(link)))).createSync(recursive: true);
+    new Directory(normalize(absolute(dirname(link))))
+        .createSync(recursive: true);
     //create parent if necessary
     //pathParent(link).createSync(recursive: true);
 
@@ -338,8 +345,5 @@ Future<int> createSymlink(Directory targetDir, Directory linkDir, String targetS
         return 0;
       });
     }
-
-
-
   }
 }

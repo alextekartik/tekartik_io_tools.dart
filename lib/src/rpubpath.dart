@@ -6,11 +6,11 @@ import 'package:path/path.dart';
 import 'package:tekartik_io_tools/pub_utils.dart';
 import 'package:yaml/yaml.dart';
 
-Stream<String> recursivePubPath(List<String> dirs, {List<String> dependencies}) {
+Stream<String> recursivePubPath(List<String> dirs,
+    {List<String> dependencies}) {
   StreamController<String> ctlr = new StreamController();
 
   Future _handleDir(String dir) async {
-
     // Ignore folder starting with .
     // don't event go below
     if (!basename(dir).startsWith('.')) {
@@ -32,8 +32,8 @@ Stream<String> recursivePubPath(List<String> dirs, {List<String> dependencies}) 
               }
 
               for (String dependency in dependencies) {
-
-                if (_hasDependencies('dependencies', dependency) || _hasDependencies('dev_dependencies', dependency)) {
+                if (_hasDependencies('dependencies', dependency) ||
+                    _hasDependencies('dev_dependencies', dependency)) {
                   ctlr.add(dir);
                 }
               }
@@ -60,7 +60,6 @@ Stream<String> recursivePubPath(List<String> dirs, {List<String> dependencies}) 
         }).asFuture().then((_) {
           return Future.wait(sub);
         });
-
       }
     }
   }

@@ -6,5 +6,4 @@ void main() {
   test('failed', () async {
     fail('will fail');
   });
-
 }

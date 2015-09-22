@@ -23,7 +23,8 @@ void defineTests() {
   });
 
   test('nothrow bad exe', () {
-    return run('com.tekartik.dummy.bin', null, throwException: false).then((RunResult result) {
+    return run('com.tekartik.dummy.bin', null, throwException: false)
+        .then((RunResult result) {
       expect(result, isNull);
     });
   });
@@ -36,12 +37,10 @@ void defineTests() {
   });
 
   test('run connectIo', () {
-    return run(dartVmBin, ['--version'], connectIo: true).then((RunResult result) {
+    return run(dartVmBin, ['--version'], connectIo: true)
+        .then((RunResult result) {
       // devPrint(result.err);
       expect(result.err.contains("version"), isTrue);
     });
   });
-
-
-
 }

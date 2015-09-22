@@ -46,7 +46,8 @@ String get dartVmBin {
     _dartVmBin = Platform.executable;
     if (!isAbsolute(_dartVmBin)) {
       if (!Platform.isWindows) {
-        _dartVmBin = (Process.runSync('which', [_dartVmBin]).stdout as String).trim();
+        _dartVmBin =
+            (Process.runSync('which', [_dartVmBin]).stdout as String).trim();
       }
     }
     if (FileSystemEntity.isLinkSync(_dartVmBin)) {
@@ -84,9 +85,12 @@ String get dart2jsBin {
 }
 
 String get scriptDirPath {
-  String script = Platform.script.toFilePath(); // pathFromFileUriOrPath(Platform.script);
+  String script =
+      Platform.script.toFilePath(); // pathFromFileUriOrPath(Platform.script);
   //print('script path: $script');
-  return isAbsolute(script) ? normalize(dirname(script)) : Directory.current.path;
+  return isAbsolute(script)
+      ? normalize(dirname(script))
+      : Directory.current.path;
 }
 
 String get scriptFilePath {
@@ -98,12 +102,12 @@ List<String> runPubArgs(List<String> args) {
   List<String> runArgs = new List();
   runArgs.add(join(dartBinDirPath, 'snapshots', 'pub.dart.snapshot'));
   runArgs.addAll(args);
-  return runArgs;    
+  return runArgs;
 }
 
 Future<RunResult> runPub(List<String> args, {String workingDirectory}) {
-
   List<String> runArgs = runPubArgs(args);
 
-  return run(dartVmBin, runArgs, workingDirectory: workingDirectory, connectIo: true);
+  return run(dartVmBin, runArgs,
+      workingDirectory: workingDirectory, connectIo: true);
 }

@@ -63,8 +63,9 @@ class GitPath {
             statusResult.nothingToCommit = true;
           }
           if (line.startsWith('Your branch is ahead of') ||
-          line.startsWith('# Your branch is ahead of') // output of drone io
-          ) {
+                  line.startsWith(
+                      '# Your branch is ahead of') // output of drone io
+              ) {
             statusResult.branchIsAhead = true;
           }
         });
@@ -74,7 +75,6 @@ class GitPath {
         } else {
           showResult = false;
         }
-
       }
 
       if (showResult) {
@@ -176,12 +176,12 @@ Future<bool> get isGitSupported async {
 }
 
 Future<RunResult> gitRun(List<String> args,
-                         {String workingDirectory, bool connectIo: false}) {
+    {String workingDirectory, bool connectIo: false}) {
   if (_DEBUG) {
     print('running git ${args}');
   }
   return run('git', args,
-  workingDirectory: workingDirectory, connectIo: connectIo).catchError((e) {
+      workingDirectory: workingDirectory, connectIo: connectIo).catchError((e) {
     // Caught ProcessException: No such file or directory
 
     if (e is ProcessException) {
@@ -190,7 +190,7 @@ Future<RunResult> gitRun(List<String> args,
       print(e.errorCode);
 
       if (e.message.contains("No such file or directory") &&
-      (e.errorCode == 2)) {
+          (e.errorCode == 2)) {
         print('GIT ERROR: make sure you have git installed in your path');
       }
     }

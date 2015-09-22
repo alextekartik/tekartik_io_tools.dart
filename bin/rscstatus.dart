@@ -18,7 +18,6 @@ const String _LOG = 'log';
 ///
 ///
 void main(List<String> arguments) {
-
   Logger log;
   //setupQuickLogging();
 
@@ -54,14 +53,13 @@ void main(List<String> arguments) {
       log.finer(dir);
       if (await isGitTopLevelPath(dir)) {
         GitPath prj = new GitPath(dir);
-        await(prj.status());
+        await (prj.status());
       } else if (await isHgTopLevelPath(dir)) {
         HgPath prj = new HgPath(dir);
-        HgStatusResult statusResult = await(prj.status());
+        HgStatusResult statusResult = await (prj.status());
         if (statusResult.nothingToCommit) {
-          await(prj.outgoing());
+          await (prj.outgoing());
         }
-
       } else {
         try {
           await new Directory(dir).list().listen((FileSystemEntity fse) {
@@ -106,4 +104,3 @@ void main(List<String> arguments) {
     }
   }
 }
-

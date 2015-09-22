@@ -14,18 +14,15 @@ const String _DEPENDENCY = 'dependency';
 
 ///
 /// Recursively find packages
-/// 
+///
 void main(List<String> arguments) {
-
   setupQuickLogging();
 
   ArgParser parser = new ArgParser(allowTrailingOptions: true);
   parser.addFlag(_HELP, abbr: 'h', help: 'Usage help', negatable: false);
   parser.addOption(_LOG, abbr: 'l', help: 'Log level (fine, debug, info...)');
   parser.addOption(_DEPENDENCY,
-  abbr: 'd',
-  help: 'The packages it depends on',
-  allowMultiple: true);
+      abbr: 'd', help: 'The packages it depends on', allowMultiple: true);
   ArgResults _argsResult = parser.parse(arguments);
 
   bool help = _argsResult[_HELP];
@@ -47,10 +44,8 @@ void main(List<String> arguments) {
     dirs = [Directory.current.path];
   }
 
-
   recursivePubPath(dirs, dependencies: dependencies).listen((String path) {
     //stdout.writeln(path);
     print(path);
   });
 }
-

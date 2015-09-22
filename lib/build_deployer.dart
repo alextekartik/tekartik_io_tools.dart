@@ -18,30 +18,29 @@ class LocalDeployer {
       fu.emptyOrCreateDirSync(dst);
       _inited = true;
     }
-
   }
-  
+
   Future deployEntryPoint(String htmlPath) {
     return deploy(htmlPath).then((_) {
       return deploy('${htmlPath}_bootstrap.dart.js');
     });
   }
-  
+
   Future deployIndexEntryPoint(String htmlPath) {
-      return deploy(htmlPath, dstPath: "index.html").then((_) {
-        return deploy('${htmlPath}_bootstrap.dart.js');
-      });
-    }
-  
+    return deploy(htmlPath, dstPath: "index.html").then((_) {
+      return deploy('${htmlPath}_bootstrap.dart.js');
+    });
+  }
+
 //  Future deployDirNotRecursive(String path) {
 //    new Directory(path).listSync(recursive: false, true) {
-//      
+//
 //    });
 //        return deploy(htmlPath, "index.html").then((_) {
 //          return deploy('${htmlPath}_bootstrap.dart.js');
 //        });
 //      }
-  
+
   Future deployAll(List<String> paths) {
     Iterator iterator = paths.iterator;
     Future _deployNext() {
@@ -57,14 +56,17 @@ class LocalDeployer {
     }
     return _deployNext();
   }
-  Future deploy(String path, {String dstPath, bool recursive: true, List<String> but}) {
+
+  Future deploy(String path,
+      {String dstPath, bool recursive: true, List<String> but}) {
     _init();
     String src_ = join(src, path);
     String dst_ = join(dst, dstPath == null ? path : dstPath);
     if (FileSystemEntity.isDirectorySync(path)) {
       //fu.copyFilesIfNewer(src_, dst_);
       //return fu.linkDir(src_, dst_);
-      return fu.linkOrCopyFilesInDirIfNewer(src_, dst_, recursive: recursive, but: but);
+      return fu.linkOrCopyFilesInDirIfNewer(src_, dst_,
+          recursive: recursive, but: but);
     } else {
       return fu.linkOrCopyFileIfNewer(src_, dst_);
     }

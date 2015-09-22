@@ -29,7 +29,6 @@ void main() {
       }
     });
 
-
     /*
     test('isGitTopLevelPath', () async {
       print(Platform.script);
@@ -43,7 +42,9 @@ void main() {
       if (_isGitSupported) {
         print(join("1", "2"));
         clearOutFolderSync();
-        var prj = new GitProject('https://github.com/alextekartik/data_test.git', rootFolder: outDataPath);
+        var prj = new GitProject(
+            'https://github.com/alextekartik/data_test.git',
+            rootFolder: outDataPath);
         // stderr.write("XXXXX ${outDataPath} XXXX");
         print(outDataPath);
         await prj.clone();
@@ -63,12 +64,6 @@ void main() {
         expect(statusResult.nothingToCommit, true);
         expect(statusResult.branchIsAhead, true);
       }
-
     });
-
   });
-
-
-
-
 }

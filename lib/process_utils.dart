@@ -20,11 +20,13 @@ class RunResult {
   String get commandLine {
     return "${executable} ${arguments}";
   }
+
   @override
   String toString() {
     StringBuffer sb = new StringBuffer();
     sb.writeln("-------------------------------");
-    sb.writeln("exitCode ${exitCode} ${executable} ${arguments} ${workingDirectory}");
+    sb.writeln(
+        "exitCode ${exitCode} ${executable} ${arguments} ${workingDirectory}");
     sb.writeln("-------------------------------");
     if (out.length > 0) {
       sb.writeln("$out");
@@ -64,12 +66,16 @@ logProcessResult(ProcessResult result, [String msg]) {
   }
 }
 
-Future<RunResult> run(String executable, List<String> arguments, {String workingDirectory, bool throwException: true, bool connectIo, bool runInShell: false}) {
+Future<RunResult> run(String executable, List<String> arguments,
+    {String workingDirectory,
+    bool throwException: true,
+    bool connectIo,
+    bool runInShell: false}) {
   if (arguments == null) {
     arguments = [];
   }
   if (workingDirectory != null) {
-    workingDirectory =  normalize(absolute(workingDirectory));
+    workingDirectory = normalize(absolute(workingDirectory));
   }
 
 //  if (_log.isLoggable(Level.FINE)) {
@@ -85,19 +91,26 @@ Future<RunResult> run(String executable, List<String> arguments, {String working
   }
 
   if (connectIo == true) {
-    return Process.start(executable, arguments, workingDirectory: workingDirectory, runInShell: runInShell).then((Process process) {
+    return Process
+        .start(executable, arguments,
+            workingDirectory: workingDirectory, runInShell: runInShell)
+        .then((Process process) {
       StringBuffer out = new StringBuffer();
       StringBuffer err = new StringBuffer();
-      
-      return Future.wait([process.stdout.listen((d) {
+
+      return Future.wait([
+        process.stdout.listen((d) {
           stdout.add(d);
           out.write(UTF8.decode(d));
-        }).asFuture(), process.stderr.listen((d) {
+        }).asFuture(),
+        process.stderr.listen((d) {
           stderr.add(d);
           err.write(UTF8.decode(d));
-        }).asFuture(), process.exitCode.then((int exitCode) {
+        }).asFuture(),
+        process.exitCode.then((int exitCode) {
           newResult.exitCode = exitCode;
-        })]).then((_) {
+        })
+      ]).then((_) {
         newResult.out = out.toString().trim();
         newResult.err = err.toString().trim();
 
@@ -108,9 +121,10 @@ Future<RunResult> run(String executable, List<String> arguments, {String working
       });
     });
   } else {
-    return Process.run(executable, arguments, workingDirectory: workingDirectory).then((ProcessResult result) {
+    return Process
+        .run(executable, arguments, workingDirectory: workingDirectory)
+        .then((ProcessResult result) {
       // print("# exitCode ${result.exitCode} ${executable} ${arguments} ${workingDirectory}");
-
 
       String out = result.stdout;
       newResult.out = out.trim();
@@ -130,7 +144,6 @@ Future<RunResult> run(String executable, List<String> arguments, {String working
       if (throwException) {
         throw e;
       }
-
     });
   }
 }
