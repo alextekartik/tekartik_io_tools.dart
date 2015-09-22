@@ -43,15 +43,30 @@ String _dartVmBin;
  */
 String get dartVmBin {
   if (_dartVmBin == null) {
+    String executable = Platform.executable;
     _dartVmBin = Platform.executable;
-    if (!isAbsolute(_dartVmBin)) {
+
+    // Sometimes we might just get "dart" so use which function on linux/mac
+    // to find where it comes from
+    if (!isAbsolute(executable)) {
       if (!Platform.isWindows) {
         _dartVmBin =
+<<<<<<< HEAD
             (Process.runSync('which', [_dartVmBin]).stdout as String).trim();
+=======
+            (Process.runSync('which', [executable]).stdout as String).trim();
+>>>>>>> b05acc47aa3adf5218e515626a8593f1bc24917c
       }
     }
     if (FileSystemEntity.isLinkSync(_dartVmBin)) {
+      String link = _dartVmBin;
       _dartVmBin = new Link(_dartVmBin).targetSync();
+
+      // on mac, if installed with brew, we might get something like ../Cellar/dart/1.12.1/bin
+      // so make sure to make it absolute
+      if (!isAbsolute(_dartVmBin)) {
+        _dartVmBin = absolute(normalize(join(dirname(link), _dartVmBin)));
+      }
     }
   }
   return _dartVmBin;

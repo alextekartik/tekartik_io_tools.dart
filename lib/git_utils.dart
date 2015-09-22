@@ -49,7 +49,8 @@ class GitPath {
     }
   }
 
-  Future<GitStatusResult> status() {
+  /// printResultIfChanges: show result if different than 'nothing to commit'
+  Future<GitStatusResult> status({bool printResultIfChanges}) {
     return _run(['status']).then((RunResult result) {
       GitStatusResult statusResult = new GitStatusResult(result);
 
@@ -77,7 +78,7 @@ class GitPath {
         }
       }
 
-      if (showResult) {
+      if (showResult && (printResultIfChanges == true)) {
         _displayResult(result);
       }
 

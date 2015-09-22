@@ -8,6 +8,7 @@ import 'package:path/path.dart';
 
 bool _DEBUG = false;
 
+<<<<<<< HEAD
 /*
 Future pubBuildExample() => pubBuild(subDir: 'example', debug: true);
 Future pubBuild({String projectPath, String subDir: 'web', bool debug: false}) {
@@ -43,6 +44,8 @@ Map<TestPlaform, String> _testPlatformStringMap = new Map.fromIterables(
 String _testPlatformString(TestPlaform platform) => _testPlatformStringMap[platform];
 */
 
+=======
+>>>>>>> b05acc47aa3adf5218e515626a8593f1bc24917c
 enum TestReporter { COMPACT, EXPANDED }
 
 Map<TestReporter, String> _testReporterStringMap = new Map.fromIterables(
@@ -72,8 +75,12 @@ class PubPackage {
       {TestReporter reporter,
       int concurrency,
       List<String> platforms,
+<<<<<<< HEAD
       bool connectIo: false,
       String name}) {
+=======
+      bool connectIo: false}) {
+>>>>>>> b05acc47aa3adf5218e515626a8593f1bc24917c
     args = new List.from(args);
     args.insertAll(0, ['run', 'test']);
     if (reporter != null) {
@@ -144,9 +151,12 @@ String getPubPackageRootSync(String resolverPath) {
 
 Future<RunResult> runPub(List<String> args,
     {String workingDirectory, bool connectIo: false}) async {
+<<<<<<< HEAD
   if (_DEBUG) {
     print('running pub ${args}');
   }
+=======
+>>>>>>> b05acc47aa3adf5218e515626a8593f1bc24917c
   try {
     String bin;
     args = new List.from(args);
@@ -156,6 +166,10 @@ Future<RunResult> runPub(List<String> args,
     } else {
       bin = dartPubBin;
     }
+    if (_DEBUG) {
+      print('running pub ${args} ${dartPubBin}');
+    }
+
     RunResult result = await run(bin, args,
         workingDirectory: workingDirectory, connectIo: connectIo);
     if (_DEBUG) {
