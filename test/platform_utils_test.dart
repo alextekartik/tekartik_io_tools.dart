@@ -7,16 +7,9 @@ import 'dart:io';
 
 void main() {
   group('platform_utils', () {
-
-
     test('dartVmBin', () async {
       // make sure it exists
       expect(new File(dartVmBin).existsSync(), isTrue);
     });
-
-
-
   });
-
-
 }
