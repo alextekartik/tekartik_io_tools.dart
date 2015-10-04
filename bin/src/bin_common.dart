@@ -6,4 +6,4 @@ import 'package:path/path.dart';
 const String _HELP = 'help';
 const String _LOG = 'log';
 
-String get currentScriptName => basename(Platform.script.path);
+String get currentScriptName => basenameWithoutExtension(Platform.script.path);
