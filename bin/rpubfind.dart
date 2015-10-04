@@ -1,5 +1,5 @@
 #!/usr/bin/env dart
-library tekartik.rpubtest;
+library tekartik_io_tools.rpubfind;
 
 // Pull recursively
 
@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:tekartik_core/log_utils.dart';
 import 'package:tekartik_io_tools/src/rpubpath.dart';
+import 'src/bin_common.dart';
 
 const String _HELP = 'help';
 const String _LOG = 'log';
@@ -27,7 +28,14 @@ void main(List<String> arguments) {
 
   bool help = _argsResult[_HELP];
   if (help) {
-    print(parser.usage);
+    stdout.writeln(
+        'Find pub package recursively (default from current directory)');
+    stdout.writeln();
+    stdout.writeln(
+        'Usage: ${currentScriptName} [<folder_paths...>] [<arguments>]');
+    stdout.writeln();
+    stdout.writeln("Global options:");
+    stdout.writeln(parser.usage);
     return;
   }
   String logLevel = _argsResult[_LOG];

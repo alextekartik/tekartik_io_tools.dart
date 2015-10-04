@@ -40,7 +40,7 @@ main(List<String> arguments) async {
         'clone one or multiple projects by their url and create pre-defined directory structure');
     stdout.writeln();
     stdout.writeln(
-        'Usage: ${currentScriptName} <source_control_uris...> [arguments]');
+        'Usage: ${currentScriptName} <source_control_uris...> [<arguments>]');
     stdout.writeln();
     stdout.writeln(
         'Example: ${currentScriptName} https://github.com/alextekartik/tekartik_io_tools.dart');

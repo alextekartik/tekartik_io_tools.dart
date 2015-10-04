@@ -1,5 +1,5 @@
 #!/usr/bin/env dart
-library tekartik.rpubtest;
+library tekartik_io_tools.rpubclean;
 
 // Pull recursively
 
@@ -9,6 +9,7 @@ import 'package:path/path.dart';
 import 'package:tekartik_core/log_utils.dart';
 import 'package:tekartik_io_tools/src/rpubpath.dart';
 import 'dart:async';
+import 'src/bin_common.dart';
 
 const String _HELP = 'help';
 const String _LOG = 'log';
@@ -39,6 +40,10 @@ Future cleanPath(String path, [bool root]) async {
           fse.deleteSync(recursive: false);
           continue;
         }
+        if (basename(fse.path) == '.packages') {
+          fse.deleteSync(recursive: false);
+          continue;
+        }
       }
     }
 
@@ -64,8 +69,14 @@ void main(List<String> arguments) {
 
   bool help = _argsResult[_HELP];
   if (help) {
-    stdout.writeln('clean all dart generated files: build/, .pub, packages/');
-    print(parser.usage);
+    stdout.writeln(
+        'clean all dart generated files: build/, .pub, packages/ from pub packages recursively (default from current directory)');
+    stdout.writeln();
+    stdout.writeln(
+        'Usage: ${currentScriptName} [<folder_paths...>] [<arguments>]');
+    stdout.writeln();
+    stdout.writeln("Global options:");
+    stdout.writeln(parser.usage);
     return;
   }
   String logLevel = _argsResult[_LOG];

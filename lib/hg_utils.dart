@@ -4,18 +4,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:tekartik_io_tools/process_utils.dart';
+import 'package:tekartik_io_tools/src/scpath.dart';
 import 'package:path/path.dart';
-// import 'package:logging/logging.dart';
-
-/*
-Logger __log;
-Logger get _log {
-  if (__log == null) {
-    __log = new Logger("hg_utils");
-  }
-  return __log;
-}
-*/
 
 bool _DEBUG = false;
 
@@ -158,26 +148,18 @@ class HgPath {
 class HgProject extends HgPath {
   String src;
   HgProject(this.src, {String path, String rootFolder}) : super._() {
-    // Handle null
-    if (path == null) {
-      Uri uri = Uri.parse(src);
-      var parts = posix.split(uri.path);
+    var parts = scUriToPathParts(src);
 
-      for (int i = parts.length - 1; i >= 0; i--) {
-        if (parts[i] == '/') {
-          _path = joinAll(parts.sublist(i + 1));
-        }
-      }
-      if (_path == null) {
-        throw new Exception(
-            'null path only allowed for https://github.com/xxxuser/xxxproject src');
-      }
-      if (rootFolder != null) {
-        _path = join(rootFolder, path);
-      }
-      this._path = path;
+    _path = joinAll(parts);
+
+    if (_path == null) {
+      throw new Exception(
+          'null path only allowed for https://github.com/xxxuser/xxxproject src');
+    }
+    if (rootFolder != null) {
+      _path = absolute(join(rootFolder, path));
     } else {
-      this._path = path;
+      _path = absolute(_path);
     }
   }
 

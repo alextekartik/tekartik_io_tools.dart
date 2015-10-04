@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:tekartik_io_tools/process_utils.dart';
+import 'package:tekartik_io_tools/src/scpath.dart';
 import 'package:path/path.dart';
 import 'package:logging/logging.dart';
 
@@ -127,24 +128,19 @@ class GitProject extends GitPath {
   GitProject(this.src, {String path, String rootFolder}) : super._() {
     // Handle null
     if (path == null) {
-      Uri uri = Uri.parse(src);
-      var parts = posix.split(uri.path);
+      var parts = scUriToPathParts(src);
 
-      for (int i = parts.length - 1; i >= 0; i--) {
-        if (parts[i] == 'github.com') {
-          _path = joinAll(parts.sublist(i + 1));
-        } else if (parts[i] == '/') {
-          _path = joinAll(parts.sublist(i + 1));
-        }
-      }
+      _path = joinAll(parts);
+
       if (_path == null) {
         throw new Exception(
             'null path only allowed for https://github.com/xxxuser/xxxproject src');
       }
       if (rootFolder != null) {
-        _path = join(rootFolder, path);
+        _path = absolute(join(rootFolder, path));
+      } else {
+        _path = absolute(_path);
       }
-      this._path = path;
     } else {
       this._path = path;
     }
@@ -156,6 +152,7 @@ class GitProject extends GitPath {
       args.add('--progress');
     }
     args.addAll([src, path]);
+    print(args);
     return gitRun(args, connectIo: connectIo);
   }
 

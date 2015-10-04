@@ -7,7 +7,7 @@ import 'package:path/path.dart';
 /// removing user information and scheme
 List<String> scUriToPathParts(String uri) {
   Uri _uri = Uri.parse(uri);
-  List<String> parts = split(_uri.path);
+  List<String> parts = posix.split(_uri.path);
 
   // remove root if any
   if (parts[0] == '/') {

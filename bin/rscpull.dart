@@ -10,6 +10,7 @@ import 'package:path/path.dart';
 import 'package:tekartik_core/log_utils.dart';
 import 'package:tekartik_io_tools/git_utils.dart';
 import 'package:tekartik_io_tools/hg_utils.dart';
+import 'src/bin_common.dart';
 
 const String _HELP = 'help';
 const String _LOG = 'log';
@@ -35,7 +36,14 @@ main(List<String> arguments) async {
 
   bool help = _argsResult[_HELP];
   if (help) {
-    print(parser.usage);
+    stdout.writeln(
+        'Pull(update) from source control recursively (default from current directory)');
+    stdout.writeln();
+    stdout.writeln(
+        'Usage: ${currentScriptName} [<folder_paths...>] [<arguments>]');
+    stdout.writeln();
+    stdout.writeln("Global options:");
+    stdout.writeln(parser.usage);
     return;
   }
   bool dryRun = _argsResult[_DRY_RUN];
@@ -44,7 +52,7 @@ main(List<String> arguments) async {
   if (logLevel != null) {
     setupQuickLogging(parseLogLevel(logLevel));
   }
-  log = new Logger("rscstatus");
+  log = new Logger("rscpull");
   log.fine('Log level ${Logger.root.level}');
 
   // get dirs in parameters, default to current
@@ -81,31 +89,6 @@ main(List<String> arguments) async {
         }
       }
     }
-    /*
-    // this is a directoru
-    String dotGit = ".git";
-    return (FileSystemEntity.isDirectory(dir)).then((bool isDir) {
-      //print("dir $dir: ${isDir}");
-      if (isDir) {
-        String gitFile = join(dir, dotGit);
-        return FileSystemEntity.isDirectory(gitFile).then((bool containsDotGit) {
-          //print("gitFile $gitFile: ${containsDotGit}");
-          if (containsDotGit) {
-            gitPull(dir);
-            print("git folder: ${dir}");
-          } else {
-            List<Future> sub = [];
-
-            return new Directory(dir).list().listen((FileSystemEntity fse) {
-              sub.add(_handleDir(fse.path));
-            }).asFuture().then((_) {
-              Future.wait(sub);
-            });
-          }
-        });
-      }
-    });
-    */
   }
   for (String dir in dirs) {
     print(dir);

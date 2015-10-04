@@ -1,5 +1,5 @@
 #!/usr/bin/env dart
-library git_pull;
+library tekartik_io_tools.rscstatus;
 
 // Pull recursively
 
@@ -9,6 +9,7 @@ import 'package:args/args.dart';
 import 'package:tekartik_core/log_utils.dart';
 import 'package:tekartik_io_tools/git_utils.dart';
 import 'package:tekartik_io_tools/hg_utils.dart';
+import 'src/bin_common.dart';
 
 const String _HELP = 'help';
 const String _LOG = 'log';
@@ -29,7 +30,14 @@ void main(List<String> arguments) {
 
   bool help = _argsResult[_HELP];
   if (help) {
-    print(parser.usage);
+    stdout.writeln(
+        'Display source control status recursively (default from current directory)');
+    stdout.writeln();
+    stdout.writeln(
+        'Usage: ${currentScriptName} [<folder_paths...>] [<arguments>]');
+    stdout.writeln();
+    stdout.writeln("Global options:");
+    stdout.writeln(parser.usage);
     return;
   }
   String logLevel = _argsResult[_LOG];
