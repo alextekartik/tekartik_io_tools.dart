@@ -124,7 +124,7 @@ class GitPath {
 class GitProject extends GitPath {
   String src;
 
-  GitProject(this.src, {String rootFolder}) : super._() {
+  GitProject(this.src, {String path, String rootFolder}) : super._() {
     // Handle null
     if (path == null) {
       Uri uri = Uri.parse(src);
@@ -145,16 +145,18 @@ class GitProject extends GitPath {
         _path = join(rootFolder, path);
       }
       this._path = path;
+    } else {
+      this._path = path;
     }
   }
 
-  Future clone() {
+  Future clone({bool connectIo: false}) {
     List<String> args = ['clone'];
     if (_log.isLoggable(Level.FINEST)) {
       args.add('--progress');
     }
     args.addAll([src, path]);
-    return gitRun(args);
+    return gitRun(args, connectIo: connectIo);
   }
 
   Future pullOrClone() {
@@ -212,6 +214,13 @@ Future gitPull(String path) {
 @deprecated
 Future gitStatus(String path) {
   return gitRun(['status'], workingDirectory: path);
+}
+
+Future<bool> isGitRepository(String uri) async {
+  RunResult runResult = await gitRun(['ls-remote', '--exit-code', '-h', uri]);
+  // 2 is returned if not found
+  // 128 if an error occured
+  return (runResult.exitCode == 0) || (runResult.exitCode == 2);
 }
 
 Future<bool> isGitTopLevelPath(String path) async {

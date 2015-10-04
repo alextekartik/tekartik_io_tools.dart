@@ -38,6 +38,23 @@ void main() {
     });
     */
 
+    test('isGitRepository', () async {
+      expect(
+          await isGitRepository(
+              'https://github.com/alextekartik/tekartik_io_tools.dart'),
+          isTrue);
+      expect(
+          await isGitRepository(
+              'https://github.com/alextekartik/tekartik_io_tools.dart_NO'),
+          isFalse);
+      expect(
+          await isGitRepository('https://bitbucket.org/alextk/public_git_test'),
+          isTrue);
+      expect(
+          await isGitRepository('https://bitbucket.org/alextk/public_hg_test'),
+          isFalse);
+    });
+
     test('GitProject', () async {
       if (_isGitSupported) {
         //print(join("1", "2"));
