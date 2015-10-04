@@ -157,16 +157,14 @@ class HgPath {
 
 class HgProject extends HgPath {
   String src;
-  HgProject(this.src, {String rootFolder}) : super._() {
+  HgProject(this.src, {String path, String rootFolder}) : super._() {
     // Handle null
     if (path == null) {
       Uri uri = Uri.parse(src);
       var parts = posix.split(uri.path);
 
       for (int i = parts.length - 1; i >= 0; i--) {
-        if (parts[i] == 'github.com') {
-          _path = joinAll(parts.sublist(i + 1));
-        } else if (parts[i] == '/') {
+        if (parts[i] == '/') {
           _path = joinAll(parts.sublist(i + 1));
         }
       }
@@ -178,13 +176,15 @@ class HgProject extends HgPath {
         _path = join(rootFolder, path);
       }
       this._path = path;
+    } else {
+      this._path = path;
     }
   }
 
-  Future clone() {
+  Future clone({bool connectIo: false}) {
     List<String> args = ['clone'];
     args.addAll([src, path]);
-    return hgRun(args);
+    return hgRun(args, connectIo: connectIo);
   }
 
   Future pullOrClone() {
@@ -235,6 +235,13 @@ Future<RunResult> hgRun(List<String> args,
     }
     return result;
   });
+}
+
+Future<bool> isHgRepository(String uri) async {
+  RunResult runResult = await hgRun(['identify', uri], connectIo: false);
+  // 0 is returned if found (or empty), out contains the last revision number such as 947e3404e4b7
+  // 255 if an error occured
+  return (runResult.exitCode == 0);
 }
 
 Future<bool> isHgTopLevelPath(String path) async {

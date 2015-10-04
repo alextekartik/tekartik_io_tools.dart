@@ -39,6 +39,18 @@ void defineTests() {
       expect(await isHgTopLevelPath(dirname(scriptDirPath)), isTrue, reason: dirname(scriptDirPath));
     });
     */
+    test('isHgRepository', () async {
+      expect(
+          await isHgRepository('https://bitbucket.org/alextk/public_hg_test'),
+          isTrue);
+      expect(
+          await isHgRepository(
+              'https://bitbucket.org/alextk/public_hg_test_NO'),
+          isFalse);
+      expect(
+          await isHgRepository('https://bitbucket.org/alextk/public_git_test'),
+          isFalse);
+    });
 
     test('HgProject', () async {
       if (_isHgSupported) {
