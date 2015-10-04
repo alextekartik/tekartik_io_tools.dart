@@ -99,7 +99,14 @@ void main(List<String> arguments) {
 
   Future _handleProject(String path, [String file]) async {
     PubPackage pkg = new PubPackage(path);
-    //print(pkg);
+
+    // if no file is given make sure the test/folder exists
+    if (file == null) {
+      // no tests found
+      if (!(await FileSystemEntity.isDirectory(join(path, "test")))) {
+        return;
+      }
+    }
     if (dryRun) {
       print('test on ${pkg.path}');
     } else {
