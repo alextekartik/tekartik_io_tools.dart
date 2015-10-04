@@ -1,4 +1,4 @@
-library tekartik_io_tools.rpubpath;
+library tekartik_io_tools.src.rpubpath;
 
 import 'dart:async';
 import 'dart:io';
