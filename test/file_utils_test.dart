@@ -44,7 +44,6 @@ void defineTests() {
       String path2 = outDataFilenamePath(simpleFileName2);
       writeStringContentSync(path1, simpleContent);
 
-      print(path2);
       return copyFileIfNewer(path1, path2).then((int copied) {
         expect(new File(path2).readAsStringSync(), equals(simpleContent));
         expect(copied, equals(1));

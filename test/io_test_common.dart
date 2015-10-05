@@ -10,6 +10,7 @@ class _TestUtils {
       (reflectClass(_TestUtils).owner as LibraryMirror).uri.toFilePath();
 }
 
+String get testScriptPath => _TestUtils.scriptPath;
 String get dataPath => join(_TestUtils.scriptPath, "data");
 String get outDataPath => getOutTestPath(testDescriptions);
 
