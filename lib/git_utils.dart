@@ -1,4 +1,4 @@
-library tekartik_git_utils;
+library tekartik_io_tools.git_utils;
 
 import 'dart:async';
 import 'dart:io';
@@ -152,7 +152,6 @@ class GitProject extends GitPath {
       args.add('--progress');
     }
     args.addAll([src, path]);
-    print(args);
     return gitRun(args, connectIo: connectIo);
   }
 
