@@ -1,12 +1,11 @@
 @TestOn("vm")
 library git_utils_tests;
 
-import 'package:test/test.dart';
-import 'package:tekartik_test/test_utils_io.dart';
+import 'package:tekartik_test/test.dart';
 import 'package:tekartik_io_tools/git_utils.dart';
 import 'package:tekartik_io_tools/process_utils.dart';
 import 'dart:io';
-
+import 'io_test_common.dart';
 import 'package:path/path.dart';
 
 void main() {
@@ -55,32 +54,63 @@ void main() {
           isFalse);
     });
 
-    test('GitProject', () async {
-      if (_isGitSupported) {
-        //print(join("1", "2"));
-        clearOutFolderSync();
-        var prj = new GitProject(
-            'https://github.com/alextekartik/data_test.git',
-            rootFolder: outDataPath);
-        // stderr.write("XXXXX ${outDataPath} XXXX");
-        //print(outDataPath);
-        await prj.clone();
-        GitStatusResult statusResult = await prj.status();
-        expect(statusResult.nothingToCommit, true);
-        expect(statusResult.branchIsAhead, false);
+    group('bitbucket.org', () {
+      test('GitProject', () async {
+        if (_isGitSupported) {
+          String outPath = clearOutTestPath(testDescriptions);
+          expect(await (isGitTopLevelPath(outPath)), isFalse);
+          var prj = new GitProject(
+              'https://bitbucket.org/alextk/public_git_test',
+              rootFolder: outPath);
+          await prj.clone();
+          expect(await (isGitTopLevelPath(outPath)), isTrue);
+          GitStatusResult statusResult = await prj.status();
+          expect(statusResult.nothingToCommit, true);
+          expect(statusResult.branchIsAhead, false);
 
-        File tempFile = new File(join(prj.path, "temp_file.txt"));
-        await tempFile.writeAsString("echo");
-        statusResult = await prj.status();
-        expect(statusResult.nothingToCommit, false);
-        expect(statusResult.branchIsAhead, false);
+          File tempFile = new File(join(prj.path, "temp_file.txt"));
+          await tempFile.writeAsString("echo");
+          statusResult = await prj.status();
+          expect(statusResult.nothingToCommit, false);
+          expect(statusResult.branchIsAhead, false);
 
-        await prj.add(pathspec: ".");
-        await prj.commit("test");
-        statusResult = await prj.status();
-        expect(statusResult.nothingToCommit, true);
-        expect(statusResult.branchIsAhead, true);
-      }
+          await prj.add(pathspec: ".");
+          await prj.commit("test");
+          statusResult = await prj.status();
+          expect(statusResult.nothingToCommit, true);
+          // not supported for empty repository
+          //expect(statusResult.branchIsAhead, true);
+        }
+      });
+    });
+
+    group('github.com', () {
+      test('GitProject', () async {
+        if (_isGitSupported) {
+          String outPath = clearOutTestPath(testDescriptions);
+          expect(await (isGitTopLevelPath(outPath)), isFalse);
+          var prj = new GitProject(
+              'https://github.com/alextekartik/data_test.git',
+              rootFolder: outPath);
+          await prj.clone();
+          expect(await (isGitTopLevelPath(outPath)), isTrue);
+          GitStatusResult statusResult = await prj.status();
+          expect(statusResult.nothingToCommit, true);
+          expect(statusResult.branchIsAhead, false);
+
+          File tempFile = new File(join(prj.path, "temp_file.txt"));
+          await tempFile.writeAsString("echo");
+          statusResult = await prj.status();
+          expect(statusResult.nothingToCommit, false);
+          expect(statusResult.branchIsAhead, false);
+
+          await prj.add(pathspec: ".");
+          await prj.commit("test");
+          statusResult = await prj.status();
+          expect(statusResult.nothingToCommit, true);
+          expect(statusResult.branchIsAhead, true);
+        }
+      });
     });
   });
 }
