@@ -7,9 +7,6 @@ import 'package:tekartik_io_tools/git_utils.dart';
 import 'package:tekartik_io_tools/sc_utils.dart';
 import 'package:path/path.dart';
 import 'io_test_common.dart';
-import 'dart:io';
-
-//import 'package:path/path.dart';
 
 void main() => defineTests();
 
@@ -19,7 +16,7 @@ void defineTests() {
       bool _isGitSupported = await isGitSupported;
 
       if (_isGitSupported) {
-        String outPath = clearOutTestPath(testDescriptions);
+        String outPath = clearOutTestPath();
 
         var prj = new GitProject('https://bitbucket.org/alextk/public_git_test',
             rootFolder: outPath);
@@ -38,7 +35,7 @@ void defineTests() {
       bool _isHgSupported = await isHgSupported;
 
       if (_isHgSupported) {
-        String outPath = clearOutTestPath(testDescriptions);
+        String outPath = clearOutTestPath();
 
         var prj = new HgProject('https://bitbucket.org/alextk/hg_data_test',
             rootFolder: outPath);
