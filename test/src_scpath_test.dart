@@ -1,6 +1,6 @@
 library tekartik_io_tools.src_scpath_test;
 
-import 'package:test/test.dart';
+import 'package:dev_test/test.dart';
 import 'package:tekartik_io_tools/src/scpath.dart';
 
 void main() {

@@ -1,7 +1,6 @@
 @TestOn("vm")
 library tekartik_io_tools.pub_utils_tests;
 
-import 'package:test/test.dart';
 import 'package:tekartik_io_tools/pub_utils.dart';
 import 'package:tekartik_io_tools/src/rpubpath.dart';
 import 'package:tekartik_io_tools/process_utils.dart';

@@ -1,9 +1,7 @@
 @TestOn("vm")
 library file_utils_tests;
 
-import 'package:tekartik_test/test.dart';
 import 'package:tekartik_io_tools/file_utils.dart';
-
 import 'package:path/path.dart';
 import 'io_test_common.dart';
 

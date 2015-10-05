@@ -3,7 +3,8 @@ library tekartik_io_tools.io_common;
 import 'dart:mirrors';
 import 'package:path/path.dart';
 import 'dart:io';
-import 'package:tekartik_test/test.dart';
+import 'package:dev_test/test.dart';
+export 'package:dev_test/test.dart';
 
 class _TestUtils {
   static final String scriptPath =

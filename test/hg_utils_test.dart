@@ -4,7 +4,6 @@ library git_utils_tests;
 import 'package:tekartik_io_tools/hg_utils.dart';
 import 'package:tekartik_io_tools/process_utils.dart';
 import 'dart:io';
-import 'package:tekartik_test/test.dart';
 import 'io_test_common.dart';
 import 'package:path/path.dart';
 

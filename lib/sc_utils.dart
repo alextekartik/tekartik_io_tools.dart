@@ -3,8 +3,6 @@ library tekartik_io_tools.sc_utils;
 import 'dart:async';
 import 'dart:io';
 
-import 'package:tekartik_io_tools/process_utils.dart';
-import 'package:tekartik_io_tools/src/scpath.dart';
 import 'package:path/path.dart';
 import 'hg_utils.dart';
 import 'git_utils.dart';
