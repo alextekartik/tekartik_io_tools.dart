@@ -1,12 +1,11 @@
 @TestOn("vm")
 library git_utils_tests;
 
-import 'package:test/test.dart';
-import 'package:tekartik_test/test_utils_io.dart';
 import 'package:tekartik_io_tools/hg_utils.dart';
 import 'package:tekartik_io_tools/process_utils.dart';
 import 'dart:io';
-
+import 'package:tekartik_test/test.dart';
+import 'io_test_common.dart';
 import 'package:path/path.dart';
 
 void main() => defineTests();
@@ -54,10 +53,12 @@ void defineTests() {
 
     test('HgProject', () async {
       if (_isHgSupported) {
-        clearOutFolderSync();
+        String outPath = clearOutTestPath(testDescriptions);
         var prj = new HgProject('https://bitbucket.org/alextk/hg_data_test',
-            rootFolder: outDataPath);
+            rootFolder: outPath);
+        expect(await (isHgTopLevelPath(outPath)), isFalse);
         await prj.clone();
+        expect(await (isHgTopLevelPath(outPath)), isTrue);
         HgStatusResult statusResult = await prj.status();
         expect(statusResult.nothingToCommit, true);
         HgOutgoingResult outgoingResult = await prj.outgoing();
