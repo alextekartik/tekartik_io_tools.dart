@@ -188,13 +188,23 @@ Future<bool> get isHgSupported async {
   }
 }
 
+@deprecated
 Future<RunResult> hgRun(List<String> args,
+        {String workingDirectory, bool connectIo: false}) =>
+    runHg(args, workingDirectory: workingDirectory, connectIo: connectIo);
+
+@deprecated
+Future<RunResult> runHg(List<String> args,
     {String workingDirectory, bool connectIo: false}) {
   if (_DEBUG) {
     print('running hg ${args}');
   }
+  // Force hg language to english
+  Map<String, String> environment = {"LANGUAGE": "en_US.UTF8"};
   return run('hg', args,
-      workingDirectory: workingDirectory, connectIo: connectIo).catchError((e) {
+      workingDirectory: workingDirectory,
+      connectIo: connectIo,
+      environment: environment).catchError((e) {
     // Caught ProcessException: No such file or directory
     if (_DEBUG) {
       print('exception: ${e}');

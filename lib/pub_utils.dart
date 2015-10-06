@@ -1,5 +1,6 @@
 library tekartik_io_tools.pub_utils;
 
+import 'package:tekartik_io_tools/dartbin_utils.dart';
 import 'package:tekartik_io_tools/process_utils.dart';
 import 'dartbin_utils.dart';
 import 'dart:async';
@@ -106,7 +107,7 @@ String getPubPackageRootSync(String resolverPath) {
     dirPath = parentDirPath;
   }
 }
-
+/*
 @deprecated
 Future<RunResult> runPub(List<String> args,
     {String workingDirectory, bool connectIo: false}) async {
@@ -151,3 +152,4 @@ Future<RunResult> runPub(List<String> args,
     throw e;
   }
 }
+*/

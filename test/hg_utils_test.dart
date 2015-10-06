@@ -22,7 +22,7 @@ void defineTests() {
 
     test('version', () async {
       if (_isHgSupported) {
-        await hgRun(['--version']).then((RunResult result) {
+        await runHg(['--version']).then((RunResult result) {
           // git version 1.9.1
           expect(result.out.startsWith("Mercurial Distributed SCM"), isTrue);
         });
@@ -39,16 +39,17 @@ void defineTests() {
     */
     test('isHgRepository', () async {
       if (_isHgSupported) {
-      expect(
-          await isHgRepository('https://bitbucket.org/alextk/public_hg_test'),
-          isTrue);
-      expect(
-          await isHgRepository(
-              'https://bitbucket.org/alextk/public_hg_test_NO'),
-          isFalse);
-      expect(
-          await isHgRepository('https://bitbucket.org/alextk/public_git_test'),
-          isFalse);
+        expect(
+            await isHgRepository('https://bitbucket.org/alextk/public_hg_test'),
+            isTrue);
+        expect(
+            await isHgRepository(
+                'https://bitbucket.org/alextk/public_hg_test_NO'),
+            isFalse);
+        expect(
+            await isHgRepository(
+                'https://bitbucket.org/alextk/public_git_test'),
+            isFalse);
       }
     });
 

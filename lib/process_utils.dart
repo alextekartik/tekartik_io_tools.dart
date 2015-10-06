@@ -11,6 +11,7 @@ class RunResult {
   String executable;
   List<String> arguments;
   String workingDirectory;
+  Map<String, String> environment;
 
   // out
   String out;
@@ -25,6 +26,9 @@ class RunResult {
   String toString() {
     StringBuffer sb = new StringBuffer();
     sb.writeln("-------------------------------");
+    if (environment != null) {
+      sb.writeln(environment);
+    }
     sb.writeln(
         "exitCode ${exitCode} ${executable} ${arguments} ${workingDirectory}");
     sb.writeln("-------------------------------");
@@ -69,6 +73,7 @@ logProcessResult(ProcessResult result, [String msg]) {
 Future<RunResult> run(String executable, List<String> arguments,
     {String workingDirectory,
     bool throwException: true,
+    Map<String, String> environment,
     bool connectIo,
     bool runInShell: false}) {
   if (arguments == null) {
@@ -86,6 +91,7 @@ Future<RunResult> run(String executable, List<String> arguments,
   newResult.executable = executable;
   newResult.arguments = arguments;
   newResult.workingDirectory = workingDirectory;
+  newResult.environment = environment;
   if (_log.isLoggable(Level.FINEST)) {
     _log.finest('executing ${newResult.commandLine}...');
   }
@@ -93,7 +99,9 @@ Future<RunResult> run(String executable, List<String> arguments,
   if (connectIo == true) {
     return Process
         .start(executable, arguments,
-            workingDirectory: workingDirectory, runInShell: runInShell)
+            workingDirectory: workingDirectory,
+            environment: environment,
+            runInShell: runInShell)
         .then((Process process) {
       StringBuffer out = new StringBuffer();
       StringBuffer err = new StringBuffer();
@@ -122,7 +130,10 @@ Future<RunResult> run(String executable, List<String> arguments,
     });
   } else {
     return Process
-        .run(executable, arguments, workingDirectory: workingDirectory)
+        .run(executable, arguments,
+            workingDirectory: workingDirectory,
+            environment: environment,
+            runInShell: runInShell)
         .then((ProcessResult result) {
       // print("# exitCode ${result.exitCode} ${executable} ${arguments} ${workingDirectory}");
 
