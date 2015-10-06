@@ -38,6 +38,7 @@ void defineTests() {
     });
     */
     test('isHgRepository', () async {
+      if (_isHgSupported) {
       expect(
           await isHgRepository('https://bitbucket.org/alextk/public_hg_test'),
           isTrue);
@@ -48,6 +49,7 @@ void defineTests() {
       expect(
           await isHgRepository('https://bitbucket.org/alextk/public_git_test'),
           isFalse);
+      }
     });
 
     test('HgProject', () async {
