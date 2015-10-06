@@ -1,7 +1,7 @@
-library tekartik_pub_utils;
+library tekartik_io_tools.pub_utils;
 
 import 'package:tekartik_io_tools/process_utils.dart';
-import 'platform_utils.dart';
+import 'dartbin_utils.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:path/path.dart';
@@ -107,6 +107,7 @@ String getPubPackageRootSync(String resolverPath) {
   }
 }
 
+@deprecated
 Future<RunResult> runPub(List<String> args,
     {String workingDirectory, bool connectIo: false}) async {
   if (_DEBUG) {

@@ -1,4 +1,4 @@
-library platform_utils;
+library tekartik_io_tools.platform_utils;
 
 import 'dart:io';
 import 'dart:async';
@@ -41,6 +41,7 @@ String _dartVmBin;
 /**
  * Get dart vm either from executable or using the which command
  */
+@deprecated
 String get dartVmBin {
   if (_dartVmBin == null) {
     String executable = Platform.executable;
@@ -68,15 +69,7 @@ String get dartVmBin {
   return _dartVmBin;
 }
 
-String get dartBinDirPath {
-  String _dartBinDirPath = dirname(dartVmBin);
-  return _dartBinDirPath;
-}
-
-String get dartPubBin {
-  return join(dartBinDirPath, 'pub');
-}
-
+/*
 String get dartEditorBin {
   if (Platform.isMacOS) {
     return join(dartTopPath, 'DartEditor.app');
@@ -87,6 +80,7 @@ String get dartEditorBin {
   }
 }
 
+/*
 String get dart2jsBin {
   if (Platform.isWindows) {
     return join(dartBinDirPath, 'dart2js.bat');
@@ -94,6 +88,7 @@ String get dart2jsBin {
     return join(dartBinDirPath, 'dart2js');
   }
 }
+*/
 
 String get scriptDirPath {
   String script =
@@ -122,3 +117,4 @@ Future<RunResult> runPub(List<String> args, {String workingDirectory}) {
   return run(dartVmBin, runArgs,
       workingDirectory: workingDirectory, connectIo: true);
 }
+*/

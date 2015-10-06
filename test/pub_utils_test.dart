@@ -4,6 +4,7 @@ library tekartik_io_tools.pub_utils_tests;
 import 'package:tekartik_io_tools/pub_utils.dart';
 import 'package:tekartik_io_tools/src/rpubpath.dart';
 import 'package:tekartik_io_tools/process_utils.dart';
+import 'package:tekartik_io_tools/dartbin_utils.dart' as bin;
 import 'package:path/path.dart';
 import 'dart:async';
 import 'io_test_common.dart';
@@ -16,7 +17,7 @@ void defineTests() {
   //useVMConfiguration();
   group('pub', () {
     test('version', () async {
-      RunResult result = await runPub(['--version']);
+      RunResult result = await bin.runPub(['--version']);
       expect(result.out.startsWith("Pub"), isTrue);
     });
 

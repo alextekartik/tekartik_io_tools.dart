@@ -31,11 +31,17 @@ Stream<String> recursivePubPath(List<String> dirs,
                 return false;
               }
 
+              bool hasDependency = false;
               for (String dependency in dependencies) {
                 if (_hasDependencies('dependencies', dependency) ||
-                    _hasDependencies('dev_dependencies', dependency)) {
-                  ctlr.add(dir);
+                    _hasDependencies('dev_dependencies', dependency) ||
+                    _hasDependencies('dependency_overrides', dependency)) {
+                  hasDependency = true;
+                  break;
                 }
+              }
+              if (hasDependency) {
+                ctlr.add(dir);
               }
             } catch (e, st) {
               print('Error parsing $yamlPath');
