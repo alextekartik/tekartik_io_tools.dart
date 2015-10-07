@@ -166,7 +166,7 @@ class HgProject extends HgPath {
   Future clone({bool connectIo: false}) {
     List<String> args = ['clone'];
     args.addAll([src, path]);
-    return hgRun(args, connectIo: connectIo);
+    return runHg(args, connectIo: connectIo);
   }
 
   Future pullOrClone() {
@@ -181,7 +181,7 @@ class HgProject extends HgPath {
 
 Future<bool> get isHgSupported async {
   try {
-    await hgRun(['--version']);
+    await runHg(['--version']);
     return true;
   } catch (e) {
     return false;
@@ -193,7 +193,6 @@ Future<RunResult> hgRun(List<String> args,
         {String workingDirectory, bool connectIo: false}) =>
     runHg(args, workingDirectory: workingDirectory, connectIo: connectIo);
 
-@deprecated
 Future<RunResult> runHg(List<String> args,
     {String workingDirectory, bool connectIo: false}) {
   if (_DEBUG) {
