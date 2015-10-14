@@ -33,7 +33,7 @@ class HgPath {
       stdout.writeln("hg ${args.join(' ')} [$path]");
       return new RunResult();
     } else {
-      return hgRun(args, workingDirectory: path);
+      return runHg(args, workingDirectory: path);
     }
   }
 
@@ -229,7 +229,7 @@ Future<RunResult> runHg(List<String> args,
 }
 
 Future<bool> isHgRepository(String uri) async {
-  RunResult runResult = await hgRun(['identify', uri], connectIo: false);
+  RunResult runResult = await runHg(['identify', uri], connectIo: false);
   // 0 is returned if found (or empty), out contains the last revision number such as 947e3404e4b7
   // 255 if an error occured
   return (runResult.exitCode == 0);

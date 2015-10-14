@@ -20,6 +20,8 @@ const String _DRY_RUN = 'dry-run';
 const String _CONCURRENCY = 'concurrency';
 const String _PLATFORM = 'platform';
 const String _NAME = 'name';
+const String _reporterOption = "reporter";
+const String _reporterOptionAbbr = "r";
 
 const List<String> allPlatforms = const [
   "vm",
@@ -41,6 +43,10 @@ void main(List<String> arguments) {
   ArgParser parser = new ArgParser(allowTrailingOptions: true);
   parser.addFlag(_HELP, abbr: 'h', help: 'Usage help', negatable: false);
   parser.addOption(_LOG, abbr: 'l', help: 'Log level (fine, debug, info...)');
+  parser.addOption(_reporterOption,
+      abbr: _reporterOptionAbbr,
+      help: 'test result output',
+      allowed: testReporterStrings);
   parser.addFlag(_DRY_RUN,
       abbr: 'd',
       help: 'Do not run test, simple show packages to be tested',
@@ -77,6 +83,11 @@ void main(List<String> arguments) {
     Logger.root.info('Log level ${Logger.root.level}');
   }
   bool dryRun = _argsResult[_DRY_RUN];
+  TestReporter reporter;
+  String reporterString = _argsResult[_reporterOption];
+  if (reporterString != null) {
+    reporter = testReporterFromString(reporterString);
+  }
 
   String name = _argsResult[_NAME];
 
@@ -117,7 +128,7 @@ void main(List<String> arguments) {
         }
         RunResult result = await pkg.runTest(args,
             concurrency: 1,
-            //reporter: TestReporter.EXPANDED,
+            reporter: reporter,
             platforms: platforms,
             connectIo: true,
             name: name);

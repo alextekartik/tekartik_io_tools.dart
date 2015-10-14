@@ -11,11 +11,18 @@ bool _DEBUG = false;
 
 enum TestReporter { COMPACT, EXPANDED }
 
-Map<TestReporter, String> _testReporterStringMap = new Map.fromIterables(
-    [TestReporter.COMPACT, TestReporter.EXPANDED], ["compact", "expanded"]);
+final Map<String, TestReporter> _testReporterMap = new Map.fromIterables(
+    ["compact", "expanded"], [TestReporter.COMPACT, TestReporter.EXPANDED]);
 
-String _testReporterString(TestReporter reporter) =>
+final Map<TestReporter, String> _testReporterStringMap =
+    new Map.fromIterables(_testReporterMap.values, _testReporterMap.keys);
+
+String testReporterString(TestReporter reporter) =>
     _testReporterStringMap[reporter];
+
+List<String> testReporterStrings = new List.from(_testReporterStringMap.values);
+TestReporter testReporterFromString(String reporterString) =>
+    _testReporterMap[reporterString];
 
 class PubPackage {
   String _path;
@@ -36,6 +43,7 @@ class PubPackage {
 
   Future<RunResult> runTest(List<String> args,
       {TestReporter reporter,
+      bool color,
       int concurrency,
       List<String> platforms,
       bool connectIo: false,
@@ -43,13 +51,20 @@ class PubPackage {
     args = new List.from(args);
     args.insertAll(0, ['run', 'test']);
     if (reporter != null) {
-      args.addAll(['-r', _testReporterString(reporter)]);
+      args.addAll(['-r', testReporterString(reporter)]);
     }
     if (concurrency != null) {
       args.addAll(['-j', concurrency.toString()]);
     }
     if (name != null) {
       args.addAll(['-n', name]);
+    }
+    if (color != null) {
+      if (color) {
+        args.add('--color');
+      } else {
+        args.add('--no-color');
+      }
     }
     if (platforms != null) {
       for (String platform in platforms) {
