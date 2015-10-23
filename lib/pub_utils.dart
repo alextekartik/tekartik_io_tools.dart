@@ -73,6 +73,17 @@ class PubPackage {
     }
     return pub(args, connectIo: connectIo);
   }
+
+  // same package is same path
+
+  @override
+  int get hashCode => path.hashCode;
+
+  @override
+  bool operator ==(o) => path == o.path;
+
+  @override
+  String toString() => path;
 }
 
 final String _pubspecYaml = "pubspec.yaml";

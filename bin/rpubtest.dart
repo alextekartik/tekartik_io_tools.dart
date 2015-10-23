@@ -18,6 +18,7 @@ const String _HELP = 'help';
 const String _LOG = 'log';
 const String _DRY_RUN = 'dry-run';
 const String _CONCURRENCY = 'concurrency';
+const String _PACKAGE_CONCURRENCY = 'packageConcurrency';
 const String _PLATFORM = 'platform';
 const String _NAME = 'name';
 const String _reporterOption = "reporter";
@@ -34,10 +35,46 @@ const List<String> allPlatforms = const [
   "ie"
 ];
 
+class TestList {
+  // empty list means all!
+  Map<PubPackage, List<String>> all = {};
+  add(PubPackage pkg, [String test]) {
+    //print("$pkg $test");
+    if (all.containsKey(pkg)) {
+      List<String> tests = all[pkg];
+      // if either is null, keep it null
+      if (tests == null || test == null) {
+        all[pkg] = null;
+      } else {
+        if (tests == null) {
+          tests = [test];
+        } else {
+          tests.add(test);
+        }
+      }
+    } else {
+      if (test == null) {
+        all[pkg] = null;
+      } else {
+        all[pkg] = [test];
+      }
+    }
+  }
+
+  Iterable<PubPackage> get packages => all.keys;
+
+  List<String> getTests(PubPackage pkg) {
+    return all[pkg];
+  }
+
+  @override
+  String toString() => all.toString();
+}
+
 ///
 /// Recursively update (pull) git folders
 ///
-void main(List<String> arguments) {
+Future main(List<String> arguments) async {
   setupQuickLogging();
 
   ArgParser parser = new ArgParser(allowTrailingOptions: true);
@@ -53,6 +90,10 @@ void main(List<String> arguments) {
       negatable: false);
   parser.addOption(_CONCURRENCY,
       abbr: 'j',
+      help: 'Number of concurrent tests in the same package tested',
+      defaultsTo: '10');
+  parser.addOption(_PACKAGE_CONCURRENCY,
+      abbr: 'k',
       help: 'Number of concurrent packages tested',
       defaultsTo: '10');
   parser.addOption(_NAME,
@@ -92,9 +133,9 @@ void main(List<String> arguments) {
   String name = _argsResult[_NAME];
 
   // get dirs in parameters, default to current
-  List<String> dirs = new List.from(_argsResult.rest);
-  if (dirs.isEmpty) {
-    dirs = [Directory.current.path];
+  List<String> dirsOrFiles = new List.from(_argsResult.rest);
+  if (dirsOrFiles.isEmpty) {
+    dirsOrFiles = [Directory.current.path];
   }
 
   List<String> platforms;
@@ -108,96 +149,80 @@ void main(List<String> arguments) {
     }
   }
 
-  Future _handleProject(String path, [String file]) async {
-    PubPackage pkg = new PubPackage(path);
+  TestList list = new TestList();
 
+  int poolSize = int.parse(_argsResult[_CONCURRENCY]);
+  int packagePoolSize = int.parse(_argsResult[_PACKAGE_CONCURRENCY]);
+
+  Future _handleProject(PubPackage pkg, [List<String> files]) async {
     // if no file is given make sure the test/folder exists
-    if (file == null) {
+    if (files == null) {
       // no tests found
-      if (!(await FileSystemEntity.isDirectory(join(path, "test")))) {
+      if (!(await FileSystemEntity.isDirectory(join(pkg.path, "test")))) {
         return;
       }
     }
     if (dryRun) {
-      print('test on ${pkg.path}');
+      print('test on ${pkg.path}${files != null ? " ${files}": ""}');
     } else {
       try {
         List<String> args = [];
-        if (file != null) {
-          args.add(file);
+        if (files != null) {
+          args.addAll(files);
         }
         RunResult result = await pkg.runTest(args,
-            concurrency: 1,
+            concurrency: poolSize,
             reporter: reporter,
             platforms: platforms,
             connectIo: true,
             name: name);
         if (result.exitCode != 0) {
-          stderr.writeln('test error in ${path}');
+          stderr.writeln('test error in ${pkg}');
         }
       } catch (e) {
-        stderr.writeln('error thrown in ${path}');
+        stderr.writeln('error thrown in ${pkg}');
         stderr.flush();
         throw e;
       }
     }
   }
 
-  int poolSize = int.parse(_argsResult[_CONCURRENCY]);
-
-  Pool pool = new Pool(poolSize);
-
-  // Handle direct dart test file access
-  List<String> testFiles = [];
-  List<String> testDirs = [];
-  for (String dir in dirs) {
-    if (FileSystemEntity.isFileSync(dir)) {
-      testFiles.add(dir);
-    } else {
-      testDirs.add(dir);
-    }
-  }
+  Pool packagePool = new Pool(packagePoolSize);
 
   // Handle pub sub path
-  for (String testDir in testDirs) {
-    if (!isPubPackageRootSync(testDir)) {
+  for (String dirOrFile in dirsOrFiles) {
+    if (!isPubPackageRootSync(dirOrFile)) {
       String packageDir;
       try {
-        packageDir = getPubPackageRootSync(testDir);
+        packageDir = getPubPackageRootSync(dirOrFile);
       } catch (_) {}
       if (packageDir != null) {
         // if it is the test dir, assume testing the package instead
-        if (testDir == "test") {
-          dirs.add(packageDir);
-        } else {
-          if (yamlHasAnyDependencies(getPackageYaml(packageDir), ['test'])) {
-            for (FileSystemEntity entity in new Directory(testDir)
-                .listSync(recursive: true, followLinks: false)) {
-              if (entity.path.endsWith("_test.dart")) {
-                testFiles.add(entity.path);
-              }
-            }
+
+        if (yamlHasAnyDependencies(getPackageYaml(packageDir), ['test'])) {
+          dirOrFile = relative(dirOrFile, from: packageDir);
+          PubPackage pkg = new PubPackage(packageDir);
+          if (dirOrFile == "test") {
+            // add whole package
+            list.add(pkg);
+          } else {
+            list.add(pkg, dirOrFile);
           }
         }
       }
     }
   }
 
-  // Handle direct dart files
-  for (String testFile in testFiles) {
-    dirs.remove(testFile);
+  // Also Handle recursive projects
+  await recursivePubPath(dirsOrFiles, dependencies: ['test'])
+      .listen((String path) {
+    list.add(new PubPackage(path));
+  }).asFuture();
 
-    pool.withResource(() async {
-      String path = await getPubPackageRoot(testFile);
-      testFile = relative(testFile, from: path);
-      return await _handleProject(path, testFile);
+  //print(list.packages);
+  for (PubPackage pkg in list.packages) {
+    packagePool.withResource(() async {
+      await _handleProject(pkg, list.getTests(pkg));
     });
   }
-
-  // Handle recursive projects
-  recursivePubPath(dirs, dependencies: ['test']).listen((String path) {
-    pool.withResource(() async {
-      return await _handleProject(path);
-    });
-  });
 }
