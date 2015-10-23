@@ -149,11 +149,41 @@ void main(List<String> arguments) {
 
   // Handle direct dart test file access
   List<String> testFiles = [];
+  List<String> testDirs = [];
   for (String dir in dirs) {
     if (FileSystemEntity.isFileSync(dir)) {
       testFiles.add(dir);
+    } else {
+      testDirs.add(dir);
     }
   }
+
+  // Handle pub sub path
+  for (String testDir in testDirs) {
+    if (!isPubPackageRootSync(testDir)) {
+      String packageDir;
+      try {
+        packageDir = getPubPackageRootSync(testDir);
+      } catch (_) {}
+      if (packageDir != null) {
+        // if it is the test dir, assume testing the package instead
+        if (testDir == "test") {
+          dirs.add(packageDir);
+        } else {
+          if (yamlHasAnyDependencies(getPackageYaml(packageDir), ['test'])) {
+            for (FileSystemEntity entity in new Directory(testDir)
+                .listSync(recursive: true, followLinks: false)) {
+              if (entity.path.endsWith("_test.dart")) {
+                testFiles.add(entity.path);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Handle direct dart files
   for (String testFile in testFiles) {
     dirs.remove(testFile);
 
@@ -164,6 +194,7 @@ void main(List<String> arguments) {
     });
   }
 
+  // Handle recursive projects
   recursivePubPath(dirs, dependencies: ['test']).listen((String path) {
     pool.withResource(() async {
       return await _handleProject(path);

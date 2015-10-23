@@ -6,6 +6,43 @@ import 'package:path/path.dart';
 import 'package:tekartik_io_tools/pub_utils.dart';
 import 'package:yaml/yaml.dart';
 
+Map getPackageYaml(String packageRoot) {
+  String pubspecYaml = "pubspec.yaml";
+  String pubspecYamlPath = join(packageRoot, pubspecYaml);
+  String content = new File(pubspecYamlPath).readAsStringSync();
+  return loadYaml(content);
+}
+
+bool yamlHasAnyDependencies(Map yaml, List<String> dependencies) {
+  bool _hasDependencies(String kind, String dependency) {
+    Map dependencies = yaml[kind];
+    if (dependencies != null) {
+      if (dependencies[dependency] != null) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  for (String dependency in dependencies) {
+    if (_hasDependencies('dependencies', dependency) ||
+        _hasDependencies('dev_dependencies', dependency) ||
+        _hasDependencies('dependency_overrides', dependency)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+bool _isToBeIgnored(String baseName) {
+  if (baseName == '.' || baseName == '..') {
+    return false;
+  }
+
+  return baseName.startsWith('.');
+}
+
 Stream<String> recursivePubPath(List<String> dirs,
     {List<String> dependencies}) {
   StreamController<String> ctlr = new StreamController();
@@ -13,46 +50,13 @@ Stream<String> recursivePubPath(List<String> dirs,
   Future _handleDir(String dir) async {
     // Ignore folder starting with .
     // don't event go below
-    if (!basename(dir).startsWith('.')) {
+    if (!_isToBeIgnored(basename(dir))) {
       if (await isPubPackageRoot(dir)) {
         if (dependencies is List && !dependencies.isEmpty) {
-          Future _handleYaml(String yamlPath) async {
-            try {
-              String content = await new File(yamlPath).readAsString();
-              var doc = loadYaml(content);
-
-              bool _hasDependencies(String kind, String dependency) {
-                Map dependencies = doc[kind];
-                if (dependencies != null) {
-                  if (dependencies[dependency] != null) {
-                    return true;
-                  }
-                }
-                return false;
-              }
-
-              bool hasDependency = false;
-              for (String dependency in dependencies) {
-                if (_hasDependencies('dependencies', dependency) ||
-                    _hasDependencies('dev_dependencies', dependency) ||
-                    _hasDependencies('dependency_overrides', dependency)) {
-                  hasDependency = true;
-                  break;
-                }
-              }
-              if (hasDependency) {
-                ctlr.add(dir);
-              }
-            } catch (e, st) {
-              print('Error parsing $yamlPath');
-              print(e);
-              print(st);
-            }
+          Map yaml = getPackageYaml(dir);
+          if (yamlHasAnyDependencies(yaml, dependencies)) {
+            ctlr.add(dir);
           }
-
-          String pubspecYaml = "pubspec.yaml";
-          String pubspecYamlPath = join(dir, pubspecYaml);
-          await _handleYaml(pubspecYamlPath);
         } else {
           // add package path
           ctlr.add(dir);
