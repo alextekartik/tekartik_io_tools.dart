@@ -137,6 +137,7 @@ Future main(List<String> arguments) async {
   if (dirsOrFiles.isEmpty) {
     dirsOrFiles = [Directory.current.path];
   }
+  List<String> dirs = [];
 
   List<String> platforms;
   if (_argsResult.wasParsed(_PLATFORM)) {
@@ -191,6 +192,9 @@ Future main(List<String> arguments) async {
 
   // Handle pub sub path
   for (String dirOrFile in dirsOrFiles) {
+    if (FileSystemEntity.isDirectorySync(dirOrFile)) {
+      dirs.add(dirOrFile);
+    }
     if (!isPubPackageRootSync(dirOrFile)) {
       String packageDir;
       try {
@@ -214,7 +218,7 @@ Future main(List<String> arguments) async {
   }
 
   // Also Handle recursive projects
-  await recursivePubPath(dirsOrFiles, dependencies: ['test'])
+  await recursivePubPath(dirs, dependencies: ['test'])
       .listen((String path) {
     list.add(new PubPackage(path));
   }).asFuture();
