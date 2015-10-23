@@ -218,8 +218,7 @@ Future main(List<String> arguments) async {
   }
 
   // Also Handle recursive projects
-  await recursivePubPath(dirs, dependencies: ['test'])
-      .listen((String path) {
+  await recursivePubPath(dirs, dependencies: ['test']).listen((String path) {
     list.add(new PubPackage(path));
   }).asFuture();
 
