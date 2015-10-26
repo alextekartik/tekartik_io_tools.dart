@@ -15,16 +15,10 @@ bool _debug = false;
 ///
 String get dartVmBin {
   if (_dartVmBin == null) {
-    String executable = Platform.executable;
-    _dartVmBin = Platform.executable;
+    _dartVmBin = Platform.resolvedExecutable;
 
-    // Sometimes we might just get "dart" so use which function on linux/mac
-    // to find where it comes from
-    if (!isAbsolute(executable)) {
-      if (!Platform.isWindows) {
-        _dartVmBin =
-            (Process.runSync('which', [executable]).stdout as String).trim();
-      }
+    if (_debug) {
+      print('dartVmBin: ${_dartVmBin}');
     }
     if (FileSystemEntity.isLinkSync(_dartVmBin)) {
       String link = _dartVmBin;

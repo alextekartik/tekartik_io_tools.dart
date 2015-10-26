@@ -4,6 +4,7 @@ library process_utils_tests;
 import 'package:dev_test/test.dart';
 import 'package:tekartik_io_tools/process_utils.dart';
 import 'package:tekartik_io_tools/dartbin_utils.dart';
+import 'package:path/path.dart';
 
 void main() => defineTests();
 
@@ -13,6 +14,10 @@ void defineTests() {
       RunResult result = await run(dartVmBin, ['--version']);
       // "Dart VM version: 1.7.0-dev.4.5 (Thu Oct  9 01:44:31 2014) on "linux_x64"\n"
       expect(result.err.contains("version"), isTrue);
+    });
+
+    test('path', () {
+      expect(isAbsolute(dartVmBin), isTrue);
     });
 
     test('connectIo', () async {
@@ -36,6 +41,8 @@ void defineTests() {
     test('dartfmt', () {
       // change false to true to check that you get output
       return runDartFmt(['--help'], connectIo: false).then((RunResult result) {
+        //print("out: ${result.out}");
+        //print("err: ${result.err}");
         expect(result.out.contains("Usage: dartfmt"), isTrue);
       });
     });
