@@ -51,7 +51,7 @@ void defineTests() {
       // change false to true to check that you get output
       RunResult result = await runDartAnalyzer(['--help']);
       // weird help is now on stderr on dart 1.13.0-dev
-      //expect(result.out.contains("version"), isTrue);
+      //expect(result.out.contains("Usage: dartanalyzer"), isTrue);
       expect(result.err.contains("Usage: dartanalyzer"), isTrue);
     });
 
