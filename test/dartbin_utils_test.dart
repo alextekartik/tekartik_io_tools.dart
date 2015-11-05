@@ -49,8 +49,9 @@ void defineTests() {
 
     test('dartanalyzer', () async {
       // change false to true to check that you get output
-      RunResult result = await runDartAnalyzer(['--help']);
-      expect(result.out.contains("Usage: dartanalyzer"), isTrue);
+      RunResult result = await runDartAnalyzer(['--version']);
+      // weird help is now on stderr
+      expect(result.out.contains("version"), isTrue);
     });
 
     test('dart2js', () async {
