@@ -22,5 +22,5 @@ executables:
   rpubtest:
   rpubupgrade:
 dependency_overrides:
-  tekartik_pub:
-    path: /media/ssd/devx/git/github.com/tekartik/tekartik_pub.dart
+#  tekartik_pub:
+#    path: /media/ssd/devx/git/github.com/tekartik/tekartik_pub.dart
