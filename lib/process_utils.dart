@@ -1,3 +1,5 @@
+/// User process_run instead
+@deprecated
 library tekartik_io_process_utils;
 
 import 'dart:io';

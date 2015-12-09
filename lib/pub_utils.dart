@@ -1,3 +1,5 @@
+/// User tekartik_pub instead
+@deprecated
 library tekartik_io_tools.pub_utils;
 
 import 'package:tekartik_io_tools/dartbin_utils.dart';
@@ -6,7 +8,8 @@ import 'dartbin_utils.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:path/path.dart';
-
+export 'package:tekartik_pub/pub.dart';
+/*
 bool _DEBUG = false;
 
 enum TestReporter { COMPACT, EXPANDED }
@@ -133,6 +136,7 @@ String getPubPackageRootSync(String resolverPath) {
     dirPath = parentDirPath;
   }
 }
+*/
 /*
 @deprecated
 Future<RunResult> runPub(List<String> args,

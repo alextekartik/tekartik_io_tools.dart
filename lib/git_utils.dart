@@ -1,3 +1,4 @@
+@deprecated
 library tekartik_io_tools.git_utils;
 
 import 'dart:async';

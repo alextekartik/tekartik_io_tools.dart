@@ -1,3 +1,5 @@
+// moved to tekartik_sc 2015-12-09
+@deprecated
 library tekartik_io_tools.sc_utils;
 
 import 'dart:async';

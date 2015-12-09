@@ -1,4 +1,5 @@
 #!/usr/bin/env dart
+@deprecated
 library tekartik_io_tools.rpubtest;
 
 // Pull recursively
@@ -8,6 +9,7 @@ import 'dart:async';
 import 'package:path/path.dart';
 import 'package:args/args.dart';
 import 'package:tekartik_core/log_utils.dart';
+import 'package:process_run/cmd_run.dart';
 import 'package:tekartik_io_tools/pub_utils.dart';
 import 'package:tekartik_io_tools/process_utils.dart';
 import 'package:tekartik_io_tools/src/rpubpath.dart';
@@ -171,12 +173,13 @@ Future main(List<String> arguments) async {
         if (files != null) {
           args.addAll(files);
         }
-        RunResult result = await pkg.runTest(args,
+        ProcessResult result = await runCmd(pkg.testCmd(args,
             concurrency: poolSize,
             reporter: reporter,
             platforms: platforms,
-            connectIo: true,
-            name: name);
+            name: name)
+          ..connectStderr = true
+          ..connectStdout = true);
         if (result.exitCode != 0) {
           stderr.writeln('test error in ${pkg}');
         }

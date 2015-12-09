@@ -1,3 +1,4 @@
+@deprecated
 library tekartik_io_tools.dartbin_utils;
 
 import 'dart:io';

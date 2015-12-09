@@ -11,6 +11,8 @@ dependencies:
   yaml: any
   tekartik_core:
     git: git://github.com/alextekartik/tekartik_core.dart
+  tekartik_pub:
+    git: git://github.com/tekartik/tekartik_pub.dart
 dev_dependencies:
   dev_test: any
   test: any
@@ -20,3 +22,5 @@ executables:
   rpubtest:
   rpubupgrade:
 dependency_overrides:
+  tekartik_pub:
+    path: /media/ssd/devx/git/github.com/tekartik/tekartik_pub.dart
