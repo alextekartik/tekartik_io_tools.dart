@@ -7,9 +7,9 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:path/path.dart';
 import 'package:tekartik_core/log_utils.dart';
-import 'package:tekartik_io_tools/src/rpubpath.dart';
 import 'dart:async';
 import 'src/bin_common.dart';
+import 'package:tekartik_pub/src/rpubpath.dart';
 
 const String _HELP = 'help';
 const String _LOG = 'log';

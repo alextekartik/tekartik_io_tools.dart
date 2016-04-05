@@ -8,7 +8,7 @@ import 'dartbin_utils.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:path/path.dart';
-export 'package:tekartik_pub/pub.dart';
+export 'package:tekartik_pub/pub_io.dart';
 /*
 bool _DEBUG = false;
 
