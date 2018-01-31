@@ -8,8 +8,15 @@ import 'package:tekartik_io_tools/dartbin_utils.dart';
 void main() => defineTests();
 
 void defineTests() {
-  test('throw bad exe', () {
-    expect(run('com.tekartik.dummy.bin', null), throws);
+  test('throw bad exe', () async {
+    try {
+      await run('com.tekartik.dummy.bin', null);
+      fail("should fail");
+    } on Exception catch (e) {
+      //print(e);
+      expect(e.runtimeType.toString(), "ProcessException");
+    }
+
   });
 
   test('nothrow bad exe', () {

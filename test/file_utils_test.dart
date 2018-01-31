@@ -43,10 +43,10 @@ void defineTests() {
       writeStringContentSync(path1, simpleContent);
 
       return copyFileIfNewer(path1, path2).then((int copied) {
-        expect(new File(path2).readAsStringSync(), equals(simpleContent));
-        expect(copied, equals(1));
+        expect(new File(path2).readAsStringSync(), simpleContent);
+        expect(copied, 1);
         return copyFileIfNewer(path1, path2).then((int copied) {
-          expect(copied, equals(0));
+          expect(copied, 0);
         });
       });
     });
@@ -62,10 +62,10 @@ void defineTests() {
         if (!Platform.isWindows) {
           expect(FileSystemEntity.isFileSync(path2), isTrue);
         }
-        expect(new File(path2).readAsStringSync(), equals(simpleContent));
-        expect(copied, equals(1));
+        expect(new File(path2).readAsStringSync(), simpleContent);
+        expect(copied, 1);
         return linkOrCopyFileIfNewer(path1, path2).then((int copied) {
-          expect(copied, equals(0));
+          expect(copied, 0);
         });
       });
     });
@@ -86,15 +86,15 @@ void defineTests() {
       return copyFilesIfNewer(sub1, sub2).then((int copied) {
         // check sub
         expect(new File(join(sub2, simpleFileName)).readAsStringSync(),
-            equals(simpleContent + "1"));
+            simpleContent + "1");
         expect(new File(join(sub2, simpleFileName2)).readAsStringSync(),
-            equals(simpleContent + "2"));
+            simpleContent + "2");
 
         // and subSub
         expect(new File(join(sub2, 'sub1', simpleFileName)).readAsStringSync(),
-            equals(simpleContent + "3"));
+            simpleContent + "3");
         return copyFilesIfNewer(sub1, sub2).then((int copied) {
-          expect(copied, equals(0));
+          expect(copied, 0);
         });
       });
     });
@@ -106,10 +106,10 @@ void defineTests() {
       writeStringContentSync(path1, simpleContent);
 
       return linkOrCopyIfNewer(path1, path2).then((int copied) {
-        expect(new File(path2).readAsStringSync(), equals(simpleContent));
-        expect(copied, equals(1));
+        expect(new File(path2).readAsStringSync(), simpleContent);
+        expect(copied, 1);
         return linkOrCopyIfNewer(path1, path2).then((int copied) {
-          expect(copied, equals(0));
+          expect(copied, 0);
         });
       });
     });
@@ -123,13 +123,13 @@ void defineTests() {
       String sub2 = outDataFilenamePath('sub2');
 
       return linkOrCopyIfNewer(sub1, sub2).then((int copied) {
-        expect(copied, equals(1));
+        expect(copied, 1);
         // check sub
         expect(new File(join(sub2, simpleFileName)).readAsStringSync(),
-            equals(simpleContent + "1"));
+            simpleContent + "1");
 
         return linkOrCopyIfNewer(sub1, sub2).then((int copied) {
-          expect(copied, equals(0));
+          expect(copied, 0);
         });
       });
     });
@@ -147,11 +147,11 @@ void defineTests() {
       await deployEntitiesIfNewer(
           sub1, sub2, [simpleFileName, simpleFileName2]);
       expect(new File(join(sub2, simpleFileName)).readAsStringSync(),
-          equals(simpleContent + "1"));
+          simpleContent + "1");
 
       int copied = await deployEntitiesIfNewer(
           sub1, sub2, [simpleFileName, simpleFileName2]);
-      expect(copied, equals(0));
+      expect(copied, 0);
     });
   });
 
@@ -169,11 +169,11 @@ void defineTests() {
         if (!Platform.isWindows) {
           expect(FileSystemEntity.isDirectorySync(sub2), isTrue);
         }
-        expect(count, equals(1));
+        expect(count, 1);
 
         // 2nd time nothing is done
         await linkDir(sub1, sub2).then((count) {
-          expect(count, equals(0));
+          expect(count, 0);
         });
       });
     });
@@ -190,7 +190,7 @@ void defineTests() {
 
       await linkFile(path1, path2).then((int result) {
         expect(result, 1);
-        expect(new File(path2).readAsStringSync(), equals(simpleContent));
+        expect(new File(path2).readAsStringSync(), simpleContent);
       });
     });
 //

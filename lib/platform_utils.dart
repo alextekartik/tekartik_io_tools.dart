@@ -17,8 +17,6 @@ String get hostname {
   return _hostname;
 }
 
-String _dartVmBin;
-
 /**
  * Get dart vm either from executable or using the which command
  */

@@ -4,7 +4,7 @@ library process_utils_tests;
 import 'package:dev_test/test.dart';
 import 'package:tekartik_io_tools/process_utils.dart';
 import 'package:tekartik_io_tools/dartbin_utils.dart';
-import 'package:path/path.dart';
+import 'package:path/path.dart' hide equals;
 
 void main() => defineTests();
 
