@@ -54,6 +54,7 @@ class LocalDeployer {
         return new Future.value();
       }
     }
+
     return _deployNext();
   }
 

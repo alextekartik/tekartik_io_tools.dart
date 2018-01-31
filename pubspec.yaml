@@ -1,5 +1,5 @@
 name: tekartik_io_tools
-version: 0.8.3
+version: 0.9.0
 description: A minimal command-line application.
 environment:
   sdk: '>=1.0.0 <2.0.0'
@@ -14,9 +14,14 @@ dependencies:
     git: git://github.com/alextekartik/tekartik_core.dart
   tekartik_pub:
     git: git://github.com/tekartik/pub.dart
+  tekartik_io_utils:
+    git: git://github.com/tekartik/io_utils.dart
+  tekartik_build_utils:
+    git: git://github.com/tekartik/build_utils.dart
 dev_dependencies:
   dev_test: any
   test: any
+  grinder: any
 executables:
 dependency_overrides:
 #  tekartik_pub:

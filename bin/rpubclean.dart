@@ -6,7 +6,7 @@ library tekartik_io_tools.rpubclean;
 import 'dart:io';
 import 'package:args/args.dart';
 import 'package:path/path.dart';
-import 'package:tekartik_core/log_utils.dart';
+import 'package:tekartik_common_utils/log_utils.dart';
 import 'dart:async';
 import 'src/bin_common.dart';
 import 'package:tekartik_pub/src/rpubpath.dart';

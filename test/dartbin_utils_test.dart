@@ -2,7 +2,9 @@
 library process_utils_tests;
 
 import 'package:dev_test/test.dart';
+// ignore: deprecated_member_use
 import 'package:tekartik_io_tools/process_utils.dart';
+// ignore: deprecated_member_use
 import 'package:tekartik_io_tools/dartbin_utils.dart';
 import 'package:path/path.dart' hide equals;
 

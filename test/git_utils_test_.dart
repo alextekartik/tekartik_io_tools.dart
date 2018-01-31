@@ -1,7 +1,9 @@
 @TestOn("vm")
 library git_utils_tests;
 
+// ignore: deprecated_member_use
 import 'package:tekartik_io_tools/git_utils.dart';
+// ignore: deprecated_member_use
 import 'package:tekartik_io_tools/process_utils.dart';
 import 'dart:io';
 import 'io_test_common.dart';
